@@ -1,0 +1,591 @@
+/* Challenge Friend - Mobile Split Screen Mode */
+.challenge-page {
+    min-height: 100vh;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Split screen mode - full height */
+.challenge-page.split-screen {
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* Setup Screen */
+.setup-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 100px 1.5rem 40px;
+    text-align: center;
+}
+
+.setup-container .back-link {
+    display: inline-block;
+    color: #64648c;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    text-decoration: none;
+}
+
+.setup-container .back-link:hover {
+    color: #5B4CFD;
+}
+
+.setup-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+}
+
+.setup-subtitle {
+    color: #64648c;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Mobile Notice */
+.mobile-notice {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    background: rgba(255, 165, 0, 0.1);
+    border: 1px solid rgba(255, 165, 0, 0.3);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+
+.mobile-notice .notice-icon {
+    font-size: 1.5rem;
+}
+
+.mobile-notice p {
+    color: #cc8400;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Player Inputs */
+.player-inputs {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.player-input {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.player-number {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64648c;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.player-input input {
+    background: #f8f8fc;
+    border: 2px solid #e5e5f0;
+    border-radius: 12px;
+    padding: 1rem;
+    color: #1a1a2e;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.player-input input:focus {
+    border-color: #5B4CFD;
+}
+
+.player-input input::placeholder {
+    color: #a0a0b0;
+}
+
+.vs-badge {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #a0a0b0;
+    margin-top: 1.5rem;
+}
+
+/* Rules Box */
+.rules-box {
+    background: #f8f8fc;
+    border: 1px solid #e5e5f0;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.rules-box h3 {
+    color: #1a1a2e;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.rules-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.rules-box li {
+    color: #64648c;
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.rules-box li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #5B4CFD;
+}
+
+/* Start Button */
+.start-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #00d4aa, #00b894);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 1rem 2.5rem;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 8px 30px rgba(0, 212, 170, 0.3);
+}
+
+.start-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 212, 170, 0.4);
+}
+
+/* ====================== */
+/* SPLIT SCREEN GAMEPLAY */
+/* ====================== */
+
+.player-half {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    width: 100%;
+    min-height: 0;
+}
+
+/* Player 1 (Top) - rotated 180 degrees so they play from opposite end */
+.player1-half {
+    background: linear-gradient(180deg, #f0f0ff 0%, #ffffff 100%);
+    transform: rotate(180deg);
+    border-bottom: 2px solid #e5e5f0;
+}
+
+/* Player 2 (Bottom) - normal orientation */
+.player2-half {
+    background: linear-gradient(180deg, #ffffff 0%, #f0fff0 100%);
+}
+
+.half-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 0.75rem;
+}
+
+.half-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.half-score {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #5B4CFD;
+}
+
+.half-question {
+    background: white;
+    border: 1px solid #e5e5f0;
+    border-radius: 16px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 0.75rem;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.half-question p {
+    color: #1a1a2e;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.half-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+.half-option {
+    background: white;
+    border: 2px solid #e5e5f0;
+    border-radius: 12px;
+    padding: 0.75rem;
+    color: #1a1a2e;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.half-option:hover:not(:disabled) {
+    background: #f0f0ff;
+    border-color: #5B4CFD;
+}
+
+.half-option.selected {
+    background: rgba(0, 212, 170, 0.15);
+    border-color: #00d4aa;
+    color: #00a884;
+}
+
+.half-option.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.half-option:disabled {
+    cursor: not-allowed;
+}
+
+.waiting-badge {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: #64648c;
+    font-weight: 600;
+}
+
+/* Center Divider */
+.center-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 0.5rem 1rem;
+    background: #1a1a2e;
+    width: 100%;
+}
+
+.center-timer {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: white;
+    background: #5B4CFD;
+    padding: 0.25rem 0.75rem;
+    border-radius: 8px;
+    min-width: 50px;
+    text-align: center;
+}
+
+.center-timer.danger {
+    background: #ff6b6b;
+    animation: pulse 0.5s infinite;
+}
+
+.center-score {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+}
+
+/* Round Result Screen */
+.round-result-container {
+    max-width: 500px;
+    padding: 100px 1.5rem 40px;
+    text-align: center;
+}
+
+.result-header {
+    margin-bottom: 2rem;
+}
+
+.winner-icon,
+.draw-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.result-header h2 {
+    color: #1a1a2e;
+    font-size: 1.5rem;
+}
+
+.round-comparison {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8f8fc;
+    border: 1px solid #e5e5f0;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.comparison-side {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.comparison-name {
+    color: #1a1a2e;
+    font-weight: 600;
+}
+
+.comparison-result {
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+}
+
+.comparison-result.correct {
+    background: rgba(0, 212, 170, 0.15);
+    color: #00a884;
+}
+
+.comparison-result.wrong {
+    background: rgba(255, 107, 107, 0.15);
+    color: #e05555;
+}
+
+.comparison-answer {
+    color: #64648c;
+    font-size: 0.85rem;
+}
+
+.score-tracker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.tracker-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tracker-wins {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #1a1a2e;
+}
+
+.tracker-name {
+    color: #64648c;
+    font-size: 0.9rem;
+}
+
+.tracker-vs {
+    font-size: 2rem;
+    color: #a0a0b0;
+}
+
+.next-round-btn {
+    background: linear-gradient(135deg, #5B4CFD, #8a2be2);
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.next-round-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Final Result Screen */
+.final-result-container {
+    text-align: center;
+    padding: 100px 1.5rem 40px;
+}
+
+.celebration {
+    margin-bottom: 2rem;
+}
+
+.trophy {
+    font-size: 5rem;
+    display: block;
+    margin-bottom: 1rem;
+    animation: bounce 1s ease-in-out infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.winner-name {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #ffd700;
+    text-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+    margin-bottom: 0.25rem;
+}
+
+.winner-title {
+    font-size: 1rem;
+    color: #64648c;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+}
+
+.final-score {
+    margin-bottom: 3rem;
+}
+
+.final-score-text {
+    font-size: 4rem;
+    font-weight: 800;
+    color: #1a1a2e;
+}
+
+.final-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.rematch-btn,
+.exit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.rematch-btn {
+    background: linear-gradient(135deg, #00d4aa, #00b894);
+    color: white;
+    border: none;
+}
+
+.rematch-btn:hover {
+    transform: translateY(-2px);
+}
+
+.exit-btn {
+    background: #f8f8fc;
+    border: 1px solid #e5e5f0;
+    color: #1a1a2e;
+}
+
+.exit-btn:hover {
+    background: #f0f0ff;
+    border-color: #5B4CFD;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .player-inputs {
+        flex-direction: column;
+    }
+
+    .vs-badge {
+        margin-top: 0;
+    }
+
+    .half-question p {
+        font-size: 1.1rem;
+    }
+
+    .half-options {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .final-actions {
+        flex-direction: column;
+    }
+}
+
+/* Landscape warning for split-screen */
+@media (orientation: landscape) and (max-height: 500px) {
+    .challenge-page.split-screen {
+        flex-direction: row;
+    }
+
+    .player1-half {
+        transform: rotate(90deg);
+        border-bottom: none;
+        border-right: 2px solid #e5e5f0;
+    }
+
+    .center-divider {
+        flex-direction: column;
+        width: auto;
+        height: 100%;
+        padding: 1rem 0.5rem;
+    }
+}
