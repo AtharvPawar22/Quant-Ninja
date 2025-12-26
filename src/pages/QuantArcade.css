@@ -1,8 +1,10 @@
-/* Quant Arcade - Light Theme */
 .arcade-page {
     min-height: 100vh;
-    background: #ffffff;
-    padding: 100px 0 60px;
+    padding: calc(var(--navbar-height) + 4rem) 0 4rem;
+    background-color: var(--bg-primary);
+    position: relative;
+    overflow: hidden;
+    transition: background-color var(--transition-base);
 }
 
 .arcade-container {
@@ -14,104 +16,85 @@
 /* Header */
 .arcade-header {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 5rem;
 }
 
 .back-link {
-    display: inline-block;
-    color: #64648c;
-    font-size: 0.9rem;
-    margin-bottom: 1.5rem;
-    transition: color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 2rem;
+    transition: all var(--transition-fast);
 }
 
 .back-link:hover {
-    color: #5B4CFD;
+    color: var(--accent-primary);
+    transform: translateX(-5px);
 }
 
 .arcade-title {
-    font-size: 3rem;
-    font-weight: 800;
-    color: #1a1a2e;
-    margin-bottom: 0.5rem;
-    letter-spacing: -0.02em;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    margin-bottom: 1rem;
+    color: var(--text-primary);
 }
 
 .arcade-subtitle {
     font-size: 1.1rem;
-    color: #64648c;
-    margin: 0;
+    color: var(--text-secondary);
+    font-style: italic;
+    font-family: var(--font-body);
 }
 
-/* Battle Modes Section */
+/* Sections */
 .battle-modes {
-    margin-bottom: 3rem;
+    margin-bottom: 4rem;
 }
 
 .section-label {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #5B4CFD;
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--accent-gold);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 1.25rem;
-}
-
-.label-icon {
-    font-size: 1rem;
+    letter-spacing: 0.2em;
+    margin-bottom: 2rem;
 }
 
 /* Mode Cards */
 .mode-cards {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
 }
 
 .mode-card {
     display: flex;
     align-items: center;
-    gap: 1.25rem;
-    background: #f8f8fc;
-    border: 1px solid #e5e5f0;
+    gap: 2rem;
+    padding: 2rem;
+    border-radius: 24px;
+}
+
+.mode-icon-wrapper {
+    width: 64px;
+    height: 64px;
     border-radius: 16px;
-    padding: 1.25rem 1.5rem;
-    transition: all 0.3s ease;
-}
-
-.mode-card:hover {
-    background: #f0f0ff;
-    border-color: #d0d0e8;
-    transform: translateX(4px);
-    box-shadow: 0 4px 20px rgba(91, 76, 253, 0.1);
-}
-
-/* Mode Icon */
-.mode-icon {
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
-    flex-shrink: 0;
+    background: var(--bg-secondary);
+    color: var(--accent-primary);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
 }
 
-.classic-icon {
-    background: linear-gradient(135deg, rgba(91, 76, 253, 0.15), rgba(91, 76, 253, 0.05));
-    border: 1px solid rgba(91, 76, 253, 0.3);
-}
-
-.friend-icon {
-    background: linear-gradient(135deg, rgba(0, 212, 170, 0.15), rgba(0, 212, 170, 0.05));
-    border: 1px solid rgba(0, 212, 170, 0.3);
-}
-
-/* Mode Info */
 .mode-info {
     flex: 1;
 }
@@ -119,97 +102,77 @@
 .mode-title-row {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.35rem;
+    gap: 1.25rem;
+    margin-bottom: 0.5rem;
 }
 
 .mode-title {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #1a1a2e;
+    font-size: 1.5rem;
+    font-family: var(--font-display);
+    color: var(--text-primary);
     margin: 0;
-    font-variant: small-caps;
-    letter-spacing: 0.03em;
 }
 
 .mode-badge {
-    font-size: 0.65rem;
-    font-weight: 700;
-    padding: 0.25rem 0.6rem;
-    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 100px;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.mode-badge.live {
-    background: rgba(0, 212, 170, 0.15);
-    color: #00a884;
-    border: 1px solid rgba(0, 212, 170, 0.3);
-}
-
-.mode-badge.local {
-    background: rgba(91, 76, 253, 0.1);
-    color: #5B4CFD;
-    border: 1px solid rgba(91, 76, 253, 0.3);
-}
-
-.mode-badge.mobile {
-    background: rgba(255, 165, 0, 0.15);
-    color: #cc8400;
-    border: 1px solid rgba(255, 165, 0, 0.3);
+    border: 1px solid var(--accent-success);
+    color: var(--accent-success);
+    background: rgba(61, 139, 110, 0.1);
 }
 
 .mode-desc {
-    font-size: 0.9rem;
-    color: #64648c;
-    margin: 0;
+    font-size: 1rem;
+    color: var(--text-secondary);
 }
 
-/* Play Button */
 .play-btn {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    background: linear-gradient(135deg, #5B4CFD, #8a2be2);
+    gap: 1rem;
+    padding: 1rem 2rem;
+    border-radius: 100px;
+    background: var(--accent-primary);
     color: white;
-    font-size: 0.9rem;
-    font-weight: 600;
-    padding: 0.75rem 1.5rem;
-    border-radius: 10px;
+    font-weight: 700;
     text-decoration: none;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 20px rgba(91, 76, 253, 0.3);
+    transition: all var(--transition-base);
 }
 
 .play-btn:hover {
+    background: var(--accent-gold);
     transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(91, 76, 253, 0.4);
-    color: white;
-}
-
-.play-icon {
-    font-size: 0.8rem;
+    box-shadow: 0 10px 20px var(--shadow-color);
 }
 
 /* Arcade Stats */
 .arcade-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
+    gap: 1.5rem;
 }
 
 .stat-card {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    background: #f8f8fc;
-    border: 1px solid #e5e5f0;
-    border-radius: 14px;
-    padding: 1.25rem;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    border-radius: 20px;
 }
 
-.stat-icon {
-    font-size: 1.5rem;
+.stat-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    color: var(--accent-gold);
+    border: 1px solid var(--border-color);
 }
 
 .stat-content {
@@ -219,38 +182,38 @@
 
 .stat-value {
     font-size: 1.5rem;
+    font-family: var(--font-display);
     font-weight: 700;
-    color: #1a1a2e;
+    color: var(--text-primary);
 }
 
 .stat-label {
-    font-size: 0.8rem;
-    color: #64648c;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    letter-spacing: 0.1em;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .arcade-title {
-        font-size: 2.25rem;
-    }
-
     .mode-card {
-        flex-wrap: wrap;
-        gap: 1rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
     }
 
-    .mode-info {
-        flex: 1 1 60%;
-    }
-
-    .play-btn {
-        width: 100%;
-        justify-content: center;
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 2rem 1rem;
     }
 
     .arcade-stats {
         grid-template-columns: 1fr;
+    }
+
+    .arcade-title {
+        font-size: 3rem;
     }
 }

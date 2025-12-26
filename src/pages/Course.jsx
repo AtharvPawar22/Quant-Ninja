@@ -19,6 +19,7 @@ export default function Course() {
 
     return (
         <main className="course-page">
+            <div className="ink-wash"></div>
             <div className="container">
                 <div className="page-header">
                     <Link to="/" className="back-link">← Back</Link>

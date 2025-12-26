@@ -1,69 +1,41 @@
-// Notes Quiz Service - API-FREE version
-// Uses OCR.space + Tesseract.js for text extraction
-// Uses pure keyword matching against 259 CAT PYQ questions (no AI needed)
+/**
+ * Notes Quiz Service - Intelligent PYQ Matcher
+ * 
+ * Flow: 
+ * 1. OCR Extraction (OCR.space + Tesseract)
+ * 2. Topic Identification (Keywords + Formulas + Context)
+ * 3. Relevant PYQ Selection (Multi-factor scoring)
+ */
 
 import { extractText } from './ocrService.js';
-import { findMatchingPYQs, extractKeywordsFromNotes, getRandomPYQsFromCategory } from './pyqMatchingService.js';
+import { findMatchingPYQs as matchQuestions } from './pyqMatchingService.js';
+import { identifyTopics } from './topicIdentifier.js';
 
-// Check if we have OCR capability (always true since Tesseract is client-side)
 export const hasApiKey = () => true;
 
-// Extract concepts from text using pure keyword matching (no AI)
-const extractConceptsFromText = (text) => {
-    if (!text || !text.trim()) {
-        return {
-            extractedFormulas: [],
-            concepts: [],
-            topics: ['general'],
-            examples: [],
-            summary: ''
-        };
-    }
-
-    const keywords = extractKeywordsFromNotes(text);
-
-    // Extract potential formulas (simple pattern matching)
-    const formulaPatterns = [
-        /[a-zA-Z]\s*[=]\s*[^,\n]+/g, // a = something
-        /\([^)]+\)\s*[=]\s*[^,\n]+/g, // (expression) = something
-        /\d+\s*[+\-*/]\s*\d+\s*[=]\s*\d+/g, // arithmetic
-        /√[^=\s]+/g, // square roots
-        /\w+²|\w+³/g, // squares and cubes
-    ];
-
-    const extractedFormulas = [];
-    for (const pattern of formulaPatterns) {
-        const matches = text.match(pattern) || [];
-        extractedFormulas.push(...matches.slice(0, 5)); // Limit to 5 per pattern
-    }
-
-    return {
-        extractedFormulas: [...new Set(extractedFormulas)].slice(0, 15),
-        concepts: keywords.matchedKeywords.slice(0, 20),
-        topics: keywords.categories.length > 0 ? keywords.categories : ['general'],
-        examples: [],
-        summary: text.slice(0, 300)
-    };
-};
-
-// Main function: Generate quiz using OCR + keyword matching (NO AI API)
+/**
+ * Main function: Generate quiz using OCR + Intelligent Topic Identification
+ * @param {File[]} files - Uploaded images/PDFs
+ * @param {Object} config - Quiz configuration (count, difficulty)
+ * @param {string} manualNotesText - Text entered manually
+ */
 export const generateQuiz = async (files, config, manualNotesText = null) => {
     const { difficulty, questionCount } = config;
 
-    // Check if we have any content to process
+    // STEP 0: Content check
     if ((!files || files.length === 0) && !manualNotesText?.trim()) {
         throw new Error('Please upload notes or type your notes content');
     }
 
     let extractedText = manualNotesText || '';
 
-    // STEP 1: Extract text from files using OCR (no AI needed)
+    // STEP 1: OCR Extraction
     if (files && files.length > 0) {
         console.log('📖 Step 1: Extracting text from notes using OCR...');
         try {
             const ocrResult = await extractText(files);
             extractedText = [extractedText, ocrResult.text].filter(t => t.trim()).join('\n\n');
-            console.log(`✅ OCR completed via ${ocrResult.source} (confidence: ${Math.round(ocrResult.confidence * 100)}%)`);
+            console.log(`✅ OCR successful via ${ocrResult.source}`);
         } catch (error) {
             console.error('OCR failed:', error.message);
             if (!manualNotesText?.trim()) {
@@ -76,109 +48,72 @@ export const generateQuiz = async (files, config, manualNotesText = null) => {
         throw new Error('No text extracted. Please upload clearer notes or type your notes manually.');
     }
 
-    // STEP 2: Extract concepts using pure keyword matching (no AI)
-    console.log('🔍 Step 2: Analyzing notes content...');
-    const extractedContent = extractConceptsFromText(extractedText);
-    console.log('📚 Detected topics:', extractedContent.topics);
-    console.log('📝 Found concepts:', extractedContent.concepts.slice(0, 10));
+    // STEP 2: Topic Identification & Matching
+    console.log('🔍 Step 2: Finding most relevant CAT PYQ questions...');
+    const result = matchQuestions(extractedText, config);
 
-    // STEP 3: Match against 259 CAT PYQ questions (pure keyword matching)
-    console.log('🎯 Step 3: Finding matching CAT PYQ questions from 259-question bank...');
-    const pyqResult = findMatchingPYQs(extractedText, extractedContent, questionCount, difficulty);
+    // STEP 3: Format questions for the UI components
+    const formattedQuestions = result.questions.map((q, index) => {
+        // Handle options formatting
+        let options = [];
+        let answer = q.answer;
 
-    console.log(`✅ Found ${pyqResult.matchedQuestions.length} relevant PYQ questions`);
+        if (q.options && q.options.length > 0) {
+            // Check if options are already formatted or need labels
+            options = q.options.map((opt, i) => {
+                const label = String.fromCharCode(65 + i);
+                if (opt.startsWith(`${label}. `)) return opt;
+                return `${label}. ${opt}`;
+            });
 
-    // If we don't have enough matches, we'll still return what we have
-    // No AI fallback - just use the best matches we found
-    let allQuestions = pyqResult.matchedQuestions;
-
-    // If we still need more questions, get random ones from matching categories
-    if (allQuestions.length < questionCount && extractedContent.topics.length > 0) {
-        console.log(`📋 Adding ${questionCount - allQuestions.length} more questions from matched categories...`);
-
-        for (const category of extractedContent.topics) {
-            if (allQuestions.length >= questionCount) break;
-
-            const categoryMap = {
-                'profitLoss': 'ARITHMETIC',
-                'percentage': 'ARITHMETIC',
-                'ratio': 'ARITHMETIC',
-                'timeWork': 'ARITHMETIC',
-                'timeDistance': 'ARITHMETIC',
-                'average': 'ARITHMETIC',
-                'interest': 'ARITHMETIC',
-                'ages': 'ARITHMETIC',
-                'equations': 'ALGEBRA',
-                'functions': 'ALGEBRA',
-                'inequalities': 'ALGEBRA',
-                'logarithms': 'ALGEBRA',
-                'sequences': 'PROGRESSIONS',
-                'maxMin': 'ALGEBRA',
-                'triangles': 'GEOMETRY',
-                'circles': 'GEOMETRY',
-                'quadrilaterals': 'GEOMETRY',
-                'polygons': 'GEOMETRY',
-                'coordinate': 'GEOMETRY',
-                'area': 'GEOMETRY',
-                'divisibility': 'NUMBER_SYSTEM',
-                'remainder': 'NUMBER_SYSTEM',
-                'primes': 'NUMBER_SYSTEM',
-                'digits': 'NUMBER_SYSTEM',
-                'numberTypes': 'NUMBER_SYSTEM',
-                'ap': 'PROGRESSIONS',
-                'gp': 'PROGRESSIONS',
-                'hp': 'PROGRESSIONS',
-                'specialSequences': 'PROGRESSIONS',
-            };
-
-            const pyqCategory = categoryMap[category] || category;
-            const additionalQuestions = getRandomPYQsFromCategory(pyqCategory, questionCount - allQuestions.length);
-
-            // Format and add (avoiding duplicates)
-            const existingIds = new Set(allQuestions.map(q => q.originalId));
-            for (const q of additionalQuestions) {
-                if (!existingIds.has(q.id) && allQuestions.length < questionCount) {
-                    allQuestions.push({
-                        id: allQuestions.length + 1,
-                        type: q.options[0] === 'numerical' ? 'TITA' : 'MCQ',
-                        question: q.question,
-                        options: q.options[0] === 'numerical' ? [] : q.options.map((opt, i) => `${String.fromCharCode(65 + i)}. ${opt}`),
-                        answer: q.options[0] === 'numerical' ? q.answer :
-                            q.options.findIndex(opt => opt === q.answer) >= 0
-                                ? String.fromCharCode(65 + q.options.findIndex(opt => opt === q.answer))
-                                : q.answer,
-                        solution: `💡 Hint: ${q.hint}\n\n📝 Solution: ${q.solution}`,
-                        topic: q.category,
-                        difficulty: 'medium',
-                        isPYQ: true,
-                        originalId: q.id
-                    });
-                    existingIds.add(q.id);
-                }
+            // Ensure answer is a label (A, B, C, D) if it matches an option text
+            const answerIndex = q.options.findIndex(opt => opt === q.answer || `${String.fromCharCode(65 + q.options.indexOf(opt))}. ${opt}` === q.answer);
+            if (answerIndex !== -1) {
+                answer = String.fromCharCode(65 + answerIndex);
             }
         }
-    }
 
-    // Log summary
-    console.log(`📊 Final quiz: ${allQuestions.length} CAT PYQ questions (100% real CAT questions!)`);
+        return {
+            id: index + 1,
+            type: options.length > 0 ? 'MCQ' : 'TITA',
+            question: q.question,
+            options: options,
+            answer: answer,
+            solution: `📝 **Topic:** ${q.category} (${q.subTopics?.join(', ') || 'General'})\n📅 **Source:** CAT ${q.year} Slot ${q.slot}\n💪 **Difficulty:** ${q.difficulty.toUpperCase()}\n\n💡 **Hint:** ${q.hint}\n\n✅ **Solution:**\n${q.solution}`,
+            topic: q.category,
+            year: q.year,
+            difficulty: q.difficulty,
+            relevanceScore: q.relevanceScore,
+            originalId: q.id
+        };
+    });
 
-    if (allQuestions.length === 0) {
-        throw new Error('Could not find matching questions. Please try notes with clearer mathematical content.');
-    }
+    console.log(`✅ Generated quiz with ${formattedQuestions.length} relevant CAT questions`);
 
-    return allQuestions;
+    return formattedQuestions;
 };
 
-// Export extracted content for UI display (optional)
+/**
+ * Quick analysis of notes without generating full quiz
+ */
 export const extractNotesContent = async (files, manualNotesText = null) => {
     let extractedText = manualNotesText || '';
 
     if (files && files.length > 0) {
-        const ocrResult = await extractText(files);
-        extractedText = [extractedText, ocrResult.text].filter(t => t.trim()).join('\n\n');
+        try {
+            const ocrResult = await extractText(files);
+            extractedText = [extractedText, ocrResult.text].filter(t => t.trim()).join('\n\n');
+        } catch (e) { }
     }
 
-    return extractConceptsFromText(extractedText);
+    const analysis = identifyTopics(extractedText);
+
+    return {
+        extractedFormulas: analysis.detectedFormulas,
+        concepts: analysis.detectedKeywords,
+        topics: analysis.primaryTopics.map(t => t.displayName),
+        summary: extractedText.slice(0, 200) + '...'
+    };
 };
 
 export default {

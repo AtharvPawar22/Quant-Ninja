@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { hasApiKey, generateQuiz } from '../services/geminiService';
+import '../styles/animations.css';
 import './NotesQuiz.css';
 
 const DIFFICULTY_OPTIONS = ['easy', 'medium', 'difficult', 'mixture'];
@@ -381,7 +382,10 @@ export default function NotesQuiz() {
         <div className="loading-container">
             <div className="loading-spinner"></div>
             <h2>{loadingMessage}</h2>
-            <p>This may take a few seconds...</p>
+            <div className="progress-bar-container">
+                <div className="progress-bar-fill"></div>
+            </div>
+            <p className="loading-subtext">Our Ninja is analyzing your {files.length > 0 ? 'images' : 'notes'} for CAT Quant patterns...</p>
         </div>
     );
 
@@ -391,10 +395,11 @@ export default function NotesQuiz() {
         if (!q) return null;
 
         const answeredCount = Object.keys(answers).length;
-        const notAnsweredCount = visitedQuestions.size - answeredCount;
-        const notVisitedCount = questions.length - visitedQuestions.size;
-        const markedCount = markedForReview.size;
         const answeredMarkedCount = [...markedForReview].filter(i => answers[i] !== undefined).length;
+        const markedCount = markedForReview.size - answeredMarkedCount;
+        const visitedTotal = visitedQuestions.size;
+        const notAnsweredCount = visitedTotal - Object.keys(answers).filter(i => visitedQuestions.has(parseInt(i))).length;
+        const notVisitedCount = questions.length - visitedTotal;
         const isTITA = q.type === 'TITA';
 
         return (
@@ -402,7 +407,7 @@ export default function NotesQuiz() {
                 {/* Top Header Bar */}
                 <div className="cat-header">
                     <div className="cat-section-tabs">
-                        <button className="section-tab active">Quant</button>
+                        <button className="section-tab">Quant</button>
                     </div>
                     <div className="cat-timer">
                         <span className="timer-label">Time Left:</span>
@@ -414,8 +419,8 @@ export default function NotesQuiz() {
 
                 {/* Question Type & Marks */}
                 <div className="cat-question-info">
-                    <span className="question-type">Type: {isTITA ? 'TITA' : 'MCQ'}</span>
-                    <span className="question-marks">Marks: +3 -1</span>
+                    <span className="question-type">Question Type: {isTITA ? 'TITA' : 'MCQ'}</span>
+                    <span className="question-marks">Marks for correct answer: 3 | Negative Marks: {isTITA ? '0' : '1'}</span>
                 </div>
 
                 <div className="cat-body">
@@ -487,10 +492,15 @@ export default function NotesQuiz() {
                             <div className="controls-right">
                                 <button
                                     className="cat-btn save-next"
-                                    onClick={handleNext}
-                                    disabled={currentQ === questions.length - 1}
+                                    onClick={() => {
+                                        if (currentQ < questions.length - 1) {
+                                            handleNext();
+                                        } else {
+                                            setShowSubmitConfirm(true);
+                                        }
+                                    }}
                                 >
-                                    Save & Next
+                                    {currentQ === questions.length - 1 ? 'Save & Submit' : 'Save & Next'}
                                 </button>
                             </div>
                         </div>
@@ -501,11 +511,11 @@ export default function NotesQuiz() {
                         {/* Stats Legend */}
                         <div className="cat-stats-legend">
                             <div className="legend-item">
-                                <span className="legend-box answered">{answeredCount}</span>
+                                <span className="legend-box answered">{Object.keys(answers).filter(i => !markedForReview.has(parseInt(i))).length}</span>
                                 <span className="legend-text">Answered</span>
                             </div>
                             <div className="legend-item">
-                                <span className="legend-box not-answered">{notAnsweredCount > 0 ? notAnsweredCount : 0}</span>
+                                <span className="legend-box not-answered">{notAnsweredCount}</span>
                                 <span className="legend-text">Not Answered</span>
                             </div>
                             <div className="legend-item">
@@ -513,7 +523,7 @@ export default function NotesQuiz() {
                                 <span className="legend-text">Not Visited</span>
                             </div>
                             <div className="legend-item">
-                                <span className="legend-box marked">{markedCount - answeredMarkedCount}</span>
+                                <span className="legend-box marked">{markedCount}</span>
                                 <span className="legend-text">Marked for Review</span>
                             </div>
                             <div className="legend-item">
@@ -559,7 +569,7 @@ export default function NotesQuiz() {
                             <div className="modal-stats">
                                 <p><strong>Answered:</strong> {answeredCount} / {questions.length}</p>
                                 <p><strong>Unanswered:</strong> {questions.length - answeredCount}</p>
-                                <p><strong>Marked for Review:</strong> {markedCount}</p>
+                                <p><strong>Marked for Review:</strong> {markedForReview.size}</p>
                             </div>
                             <p className="modal-warning">Once submitted, you cannot change your answers.</p>
                             <div className="modal-actions">
@@ -591,47 +601,60 @@ export default function NotesQuiz() {
         return (
             <div className="result-container">
                 <div className="result-header">
-                    <h1>Quiz Complete! 🎉</h1>
-                    <p>Here's how you performed</p>
+                    <h1>Analysis Complete! 📊</h1>
+                    <p>Performance on CAT {difficulty === 'mixture' ? 'Level' : difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} Questions</p>
                 </div>
 
-                <div className="score-card">
-                    <div className="score-circle">
-                        <span className="score-number">{results.correct}</span>
-                        <span className="score-total">/ {results.total}</span>
+                <div className="score-summary-grid">
+                    <div className="score-card main-score">
+                        <div className="score-circle">
+                            <span className="score-number">{results.correct}</span>
+                            <span className="score-total">/ {results.total}</span>
+                        </div>
+                        <div className="score-label">
+                            {percentage >= 90 ? 'Ninja Master! 🐉' :
+                                percentage >= 75 ? 'Expert Level 🥋' :
+                                    percentage >= 50 ? 'Strong Foundation 👍' : 'Keep Training 📚'}
+                        </div>
                     </div>
-                    <div className="score-percentage">{percentage}%</div>
-                    <div className="score-label">
-                        {percentage >= 80 ? 'Excellent! 🌟' :
-                            percentage >= 60 ? 'Good Job! 👍' :
-                                percentage >= 40 ? 'Keep Practicing! 📚' : 'Need More Work! 💪'}
+
+                    <div className="quick-stats">
+                        <div className="stat-box">
+                            <span className="stat-val">{results.correct}</span>
+                            <span className="stat-name">Correct</span>
+                        </div>
+                        <div className="stat-box">
+                            <span className="stat-val">{results.incorrect}</span>
+                            <span className="stat-name">Incorrect</span>
+                        </div>
+                        <div className="stat-box">
+                            <span className="stat-val">{results.unattempted}</span>
+                            <span className="stat-name">Skipped</span>
+                        </div>
                     </div>
                 </div>
 
-                <div className="result-stats">
-                    <div className="result-stat correct">
-                        <span className="stat-icon">✓</span>
-                        <span className="stat-value">{results.correct}</span>
-                        <span className="stat-name">Correct</span>
-                    </div>
-                    <div className="result-stat incorrect">
-                        <span className="stat-icon">✗</span>
-                        <span className="stat-value">{results.incorrect}</span>
-                        <span className="stat-name">Incorrect</span>
-                    </div>
-                    <div className="result-stat unattempted">
-                        <span className="stat-icon">○</span>
-                        <span className="stat-value">{results.unattempted}</span>
-                        <span className="stat-name">Unattempted</span>
+                <div className="analysis-breakdown">
+                    <h3>💡 Performance Insights</h3>
+                    <div className="insights-grid">
+                        <div className="insight-card">
+                            <span className="insight-icon">🎯</span>
+                            <span className="insight-text">Accuracy: {percentage}%</span>
+                        </div>
+                        <div className="insight-card">
+                            <span className="insight-icon">⏱️</span>
+                            <span className="insight-text">Avg Time: {formatTime(Math.max(0, (getTimerDuration(questionCount) - timeLeft) / (results.total - results.unattempted || 1)))} / question</span>
+                        </div>
                     </div>
                 </div>
 
                 <div className="solutions-section">
-                    <h3>Question Analysis</h3>
+                    <h3>🔍 Detailed Solutions & Analysis</h3>
                     {questions.map((q, i) => {
                         const userAnswer = answers[i];
                         const isCorrect = userAnswer && userAnswer.toString().toLowerCase() === q.answer.toString().toLowerCase();
                         const isExpanded = showSolutions[i];
+                        const isTITA = q.type === 'TITA';
 
                         return (
                             <div key={i} className={`solution-card ${isCorrect ? 'correct' : userAnswer ? 'incorrect' : 'unattempted'}`}>
@@ -643,32 +666,58 @@ export default function NotesQuiz() {
                                         {isCorrect ? '✓' : userAnswer ? '✗' : '○'}
                                     </div>
                                     <div className="solution-info">
-                                        <span className="solution-q">Q{i + 1}: {q.question.slice(0, 50)}...</span>
-                                        <span className="solution-topic">{q.topic} • {q.difficulty} • {q.type || 'MCQ'}</span>
+                                        <div className="solution-meta">
+                                            <span className="tag-pill source-tag">CAT {q.year}</span>
+                                            <span className="tag-pill diff-tag">{q.difficulty}</span>
+                                            {q.relevanceScore && <span className="tag-pill rel-tag">Match: {Math.round(q.relevanceScore)}%</span>}
+                                        </div>
+                                        <div className="solution-q-text">{q.question.slice(0, 80)}...</div>
                                     </div>
                                     <div className="solution-toggle">
-                                        {isExpanded ? '▲' : '▼'}
+                                        {isExpanded ? 'Collapse' : 'View Solution'} {isExpanded ? '▲' : '▼'}
                                     </div>
                                 </div>
                                 {isExpanded && (
                                     <div className="solution-body">
-                                        <p className="full-question">{q.question}</p>
+                                        <div className="q-content-box">
+                                            <strong>Question {i + 1}:</strong>
+                                            <p className="full-question">{q.question}</p>
+                                        </div>
+
                                         {q.options && q.options.length > 0 && (
                                             <div className="options-review">
-                                                {q.options.map((opt, oi) => (
-                                                    <div key={oi} className={`option-review ${opt.charAt(0) === q.answer ? 'correct-option' : ''}`}>
-                                                        {opt}
-                                                    </div>
-                                                ))}
+                                                {q.options.map((opt, oi) => {
+                                                    const optionLetter = opt.charAt(0);
+                                                    const isUserChoice = userAnswer === optionLetter;
+                                                    const isCorrectOpt = optionLetter === q.answer;
+
+                                                    return (
+                                                        <div key={oi} className={`option-review ${isCorrectOpt ? 'correct-option' : ''} ${isUserChoice && !isCorrectOpt ? 'wrong-option' : ''}`}>
+                                                            {opt}
+                                                            {isUserChoice && <span className="selection-badge">Your Choice</span>}
+                                                            {isCorrectOpt && <span className="correct-badge">Correct Answer</span>}
+                                                        </div>
+                                                    );
+                                                })}
                                             </div>
                                         )}
-                                        <div className="answer-row">
-                                            <span>Your Answer: <strong className={isCorrect ? 'correct' : 'incorrect'}>{userAnswer || 'Not Attempted'}</strong></span>
-                                            <span>Correct Answer: <strong className="correct">{q.answer}</strong></span>
+
+                                        <div className="answer-summary">
+                                            <div className={`answer-item ${isCorrect ? 'correct' : 'incorrect'}`}>
+                                                <span>Your Answer:</span>
+                                                <strong>{userAnswer || 'Not Attempted'}</strong>
+                                            </div>
+                                            <div className="answer-item correct">
+                                                <span>Correct Answer:</span>
+                                                <strong>{q.answer}</strong>
+                                            </div>
                                         </div>
-                                        <div className="solution-text">
-                                            <strong>Solution:</strong>
-                                            <p>{q.solution}</p>
+
+                                        <div className="solution-explanation">
+                                            <div className="explanation-header">Ninja Insight & Full Solution</div>
+                                            <div className="explanation-content whitespace-pre-wrap">
+                                                {q.solution}
+                                            </div>
                                         </div>
                                     </div>
                                 )}
@@ -691,6 +740,7 @@ export default function NotesQuiz() {
 
     return (
         <main className={`notes-page ${stage === 'quiz' ? 'quiz-mode' : ''}`}>
+            {stage !== 'quiz' && <div className="ink-wash"></div>}
             <div className="container">
                 {stage === 'config' && (
                     <div className="page-header">

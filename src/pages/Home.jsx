@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import '../styles/animations.css';
 import './Home.css';
 
 export default function Home() {
@@ -19,282 +20,214 @@ export default function Home() {
 
     return (
         <main className="home">
-            {/* Hero - Asymmetric with overlapping elements */}
+            <div className="ink-wash"></div>
+
+            {/* Hero Section */}
             <section className="hero">
                 <div className="container">
                     <div className="hero-layout">
-                        {/* Large text positioned asymmetrically */}
-                        <div className="hero-text">
+                        <div className="hero-content fade-in-up">
+                            <div className="hero-badge fade-in delay-1">
+                                <span className="brush-underline">Master CAT Quant</span>
+                            </div>
                             <h1 className="hero-title">
-                                <span className="title-line-1">Master</span>
-                                <span className="title-line-2">CAT Quant</span>
+                                <span className="title-scholar">The Scholar's</span>
+                                <span className="title-ninja">Ninja Path</span>
                             </h1>
                             <div className="hero-subtitle">
-                                <span className="percentile">99%ile</span>
-                                <p>Not a question bank. A performance platform for structure recognition and pattern mastery.</p>
+                                <div className="percentile-box">
+                                    <span className="percentile-num">99</span>
+                                    <span className="percentile-label">%ile</span>
+                                </div>
+                                <p>A precision performance platform for structure recognition and obsessive pattern mastery. Not just a question bank—an instinct builder.</p>
                             </div>
-                        </div>
 
-                        {/* Stats positioned to overlap */}
-                        <div className="hero-stats-card">
-                            <div className="stat-item">
-                                <div className="stat-num">150+</div>
-                                <div className="stat-label">Structures</div>
-                            </div>
-                            <div className="stat-item">
-                                <div className="stat-num">8</div>
-                                <div className="stat-label">Years PYQ</div>
-                            </div>
-                            <div className="stat-item">
-                                <div className="stat-num">5s</div>
-                                <div className="stat-label">Per Pattern</div>
-                            </div>
-                        </div>
-
-                        {/* CTA positioned asymmetrically */}
-                        <div className="hero-cta">
-                            <Link to="/pattern-recognition" className="btn btn-primary btn-large btn-with-icon">
-                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                                </svg>
-                                <span>Try Pattern Training</span>
-                            </Link>
-                            <Link to="/notes-quiz" className="btn btn-secondary btn-with-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                    <polyline points="14 2 14 8 20 8"></polyline>
-                                    <path d="M12 18v-6"></path>
-                                    <path d="M9 15l3-3 3 3"></path>
-                                </svg>
-                                <span>Notes to Quiz</span>
-                            </Link>
-                            {/* Arcade Button */}
-                            <Link to="/arcade" className="arcade-btn">
-                                <span className="arcade-label">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
+                            <div className="hero-cta fade-in delay-2">
+                                <Link to="/pattern-recognition" className="btn btn-primary">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                                     </svg>
-                                    fun quant games
-                                </span>
-                                <span className="arcade-text">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <rect x="2" y="6" width="20" height="12" rx="2"></rect>
-                                        <path d="M6 12h4"></path>
-                                        <path d="M8 10v4"></path>
-                                        <circle cx="17" cy="10" r="1"></circle>
-                                        <circle cx="15" cy="14" r="1"></circle>
+                                    <span>Begin Training</span>
+                                </Link>
+                                <Link to="/notes-quiz" className="btn btn-secondary btn-shimmer">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                        <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-11.314l.707.707m11.314 11.314l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
                                     </svg>
-                                    Arcade
-                                </span>
-                            </Link>
+                                    <span>Notes to Quiz</span>
+                                </Link>
+                            </div>
                         </div>
 
-                        {/* Decorative shape */}
-                        <div className="shape-blob"></div>
+                        <div className="hero-visual fade-in delay-3">
+
+                            <div className="stats-grid">
+                                <div className="stat-card glass hover-lift">
+                                    <span className="stat-value">150+</span>
+                                    <span className="stat-label">Core Patterns</span>
+                                </div>
+                                <div className="stat-card glass hover-lift">
+                                    <span className="stat-value">8yrs</span>
+                                    <span className="stat-label">PYQ Insight</span>
+                                </div>
+                                <div className="stat-card glass hover-lift">
+                                    <span className="stat-value">5s</span>
+                                    <span className="stat-label">Response Goal</span>
+                                </div>
+                            </div>
+                            <div className="floating-elements">
+                                <div className="float-shape shape-1"></div>
+                                <div className="float-shape shape-2"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            {/* Features - Overlapping Cards */}
+            {/* Features Section */}
             <section className="features">
                 <div className="container">
-                    <div className="features-asymmetric">
-                        {/* Pattern Training - Top left */}
-                        <Link to="/pattern-recognition" className="feature-card feature-medium">
-                            <div className="card-tag free">Free</div>
-                            <div className="card-content">
-                                <div className="card-icon">
-                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                                    </svg>
-                                </div>
-                                <h3>Pattern Training</h3>
-                                <p className="card-lead">5-second recognition drills. Build exam instinct through rapid-fire pattern identification.</p>
+                    <div className="section-header fade-in">
+                        <h2 className="section-title">Mastery Modules</h2>
+                        <p className="section-subtitle">Disciplined tools for the serious aspirant</p>
+                    </div>
 
-                                <div className="card-features">
-                                    <div className="card-feature">
-                                        <span className="feature-icon">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <circle cx="12" cy="12" r="10"></circle>
-                                                <circle cx="12" cy="12" r="6"></circle>
-                                                <circle cx="12" cy="12" r="2"></circle>
-                                            </svg>
-                                        </span>
-                                        <span>Timed challenges</span>
-                                    </div>
-                                    <div className="card-feature">
-                                        <span className="feature-icon">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <line x1="18" y1="20" x2="18" y2="10"></line>
-                                                <line x1="12" y1="20" x2="12" y2="4"></line>
-                                                <line x1="6" y1="20" x2="6" y2="14"></line>
-                                            </svg>
-                                        </span>
-                                        <span>Track accuracy</span>
-                                    </div>
-                                    <div className="card-feature">
-                                        <span className="feature-icon">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M21 2v6h-6"></path>
-                                                <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
-                                                <path d="M3 22v-6h6"></path>
-                                                <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
-                                            </svg>
-                                        </span>
-                                        <span>Adaptive difficulty</span>
-                                    </div>
-                                </div>
-
-                                <div className="card-stats">
-                                    <div className="mini-stat">
-                                        <span className="mini-stat-num">50+</span>
-                                        <span className="mini-stat-label">Patterns</span>
-                                    </div>
-                                    <div className="mini-stat">
-                                        <span className="mini-stat-num">5s</span>
-                                        <span className="mini-stat-label">Per Drill</span>
-                                    </div>
-                                </div>
-
-                                <div className="card-arrow">Start Training →</div>
+                    <div className="features-grid">
+                        {/* Pattern Training */}
+                        <Link to="/pattern-recognition" className="feature-card glass hover-lift fade-in delay-1">
+                            <div className="card-tag">Free</div>
+                            <div className="card-icon-wrapper">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                                </svg>
+                            </div>
+                            <h3>Pattern Drills</h3>
+                            <p>Build instant recognition with 5-second rapid-fire drills. The goal isn't solving—it's knowing exactly how to solve.</p>
+                            <div className="card-footer">
+                                <span className="btn-text">Enter Dojo</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                                    <path d="M5 12h14M12 5l7 7-7 7"></path>
+                                </svg>
                             </div>
                         </Link>
 
-                        {/* Notes Quiz - Top right */}
-                        <Link to="/notes-quiz" className="feature-card feature-small">
-                            <div className="card-tag free">Free</div>
-                            <div className="card-content">
-                                <div className="card-icon">
-                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                        <polyline points="14 2 14 8 20 8"></polyline>
-                                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                                        <polyline points="10 9 9 9 8 9"></polyline>
-                                    </svg>
-                                </div>
-                                <h3>Notes Quiz</h3>
-                                <p className="card-lead">Transform any notes into personalized quizzes using AI. Active recall made effortless.</p>
-
-                                <div className="card-features">
-                                    <div className="card-feature">
-                                        <span className="feature-icon">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"></path>
-                                                <circle cx="7.5" cy="14.5" r="1.5"></circle>
-                                                <circle cx="16.5" cy="14.5" r="1.5"></circle>
-                                            </svg>
-                                        </span>
-                                        <span>AI-generated questions</span>
-                                    </div>
-                                    <div className="card-feature">
-                                        <span className="feature-icon">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                                            </svg>
-                                        </span>
-                                        <span>Any topic/subject</span>
-                                    </div>
-                                    <div className="card-feature">
-                                        <span className="feature-icon">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                                            </svg>
-                                        </span>
-                                        <span>Instant generation</span>
-                                    </div>
-                                </div>
-
-                                <div className="card-arrow">Try Now →</div>
+                        {/* AI Notes Quiz */}
+                        <Link to="/notes-quiz" className="feature-card glass hover-lift fade-in delay-2">
+                            <div className="card-tag">Free</div>
+                            <div className="card-icon-wrapper">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"></path>
+                                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                                    <path d="M9 14l2 2 4-4"></path>
+                                </svg>
+                            </div>
+                            <h3>Active Recall</h3>
+                            <p>Convert your notes into focused quizzes instantly using AI. Challenge your understanding of any topic in seconds.</p>
+                            <div className="card-footer">
+                                <span className="btn-text">Test Yourself</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                                    <path d="M5 12h14M12 5l7 7-7 7"></path>
+                                </svg>
                             </div>
                         </Link>
 
-                        {/* Core Structures - Full width hero card */}
-                        <div className="feature-card feature-large paid-card">
-                            <div className="card-badge">₹799</div>
+                        {/* Core Structures - Premium */}
+                        <div className="feature-card glass focus-card fade-in delay-3">
+                            <div className="card-tag premium">Premium</div>
                             <div className="card-content">
-                                <h2>Core Structures</h2>
-                                <p className="card-lead">150 handpicked questions representing every recurring CAT pattern.</p>
-
-                                <div className="module-tags">
-                                    <span className="tag easy">Easy • 50Q</span>
-                                    <span className="tag medium">Medium • 60Q</span>
-                                    <span className="tag hard">Hard • 40Q</span>
+                                <h3>Core Structures</h3>
+                                <p>150 handpicked questions covering every recurring CAT pattern across three difficulty modules.</p>
+                                <div className="difficulty-pills">
+                                    <span className="pill easy">Easy • 50</span>
+                                    <span className="pill medium">Medium • 60</span>
+                                    <span className="pill hard">Hard • 40</span>
                                 </div>
-
-                                <ul className="feature-list">
-                                    <li>Recognition triggers for instant ID</li>
-                                    <li>99%iler approach for each type</li>
-                                    <li>PYQ examples & patterns</li>
-                                </ul>
-
-                                <button className="btn btn-primary btn-full" onClick={() => setShowModal(true)}>
-                                    Join Waitlist
+                                <button className="btn btn-primary btn-shine" onClick={() => setShowModal(true)}>
+                                    Join the Inner Circle
                                 </button>
                             </div>
-                            <div className="card-decoration"></div>
                         </div>
+                    </div>
+                </div>
+            </section>
 
-                        {/* Approach card */}
-                        <div className="approach-card">
-                            <div className="approach-header">
-                                <h4>The 99%ile Method</h4>
-                                <p className="approach-subtitle">A systematic approach to CAT Quant mastery</p>
-                            </div>
-                            <div className="approach-steps">
-                                <div className="step">
-                                    <span className="step-num">01</span>
-                                    <div className="step-content">
-                                        <span className="step-title">Learn Core Structures</span>
-                                        <span className="step-desc">Master the 150 patterns that cover 95% of CAT</span>
+            {/* Approach */}
+            <section className="approach">
+                <div className="container">
+                    <div className="approach-box glass">
+                        <div className="approach-content">
+                            <h3>The Ninja-Scholar Method</h3>
+                            <div className="steps-container">
+                                <div className="approach-step">
+                                    <span className="step-num">一</span>
+                                    <div className="step-info">
+                                        <h4>Observe</h4>
+                                        <p>Learn the trigger points for every major structure.</p>
                                     </div>
                                 </div>
-                                <div className="step">
-                                    <span className="step-num">02</span>
-                                    <div className="step-content">
-                                        <span className="step-title">Train Recognition</span>
-                                        <span className="step-desc">Build instant pattern identification under pressure</span>
+                                <div className="approach-step">
+                                    <span className="step-num">二</span>
+                                    <div className="step-info">
+                                        <h4>Train</h4>
+                                        <p>Build instinctive response under extreme pressure.</p>
                                     </div>
                                 </div>
-                                <div className="step">
-                                    <span className="step-num">03</span>
-                                    <div className="step-content">
-                                        <span className="step-title">Execute Precisely</span>
-                                        <span className="step-desc">Apply optimal solutions in under 2 minutes</span>
+                                <div className="approach-step">
+                                    <span className="step-num">三</span>
+                                    <div className="step-info">
+                                        <h4>Master</h4>
+                                        <p>Execute the 99%ile approach in under 120 seconds.</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </section>
+
+            {/* Arcade Link Section */}
+            <section className="arcade-cta container">
+                <Link to="/arcade" className="arcade-banner glass hover-lift">
+                    <div className="arcade-banner-content">
+                        <span className="banner-tag">Training Dojo</span>
+                        <h2>Quantitative Arcade</h2>
+                        <p>Sharpen your reflexes with real-time battle modes</p>
+                    </div>
+                    <div className="arcade-banner-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                            <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                            <path d="M6 12h4m-2-2v4m7-4h.01m2.99 4h.01"></path>
+                        </svg>
+                    </div>
+                </Link>
             </section>
 
             {/* Modal */}
             {showModal && (
                 <div className="modal-overlay" onClick={() => setShowModal(false)}>
-                    <div className="modal" onClick={(e) => e.stopPropagation()}>
+                    <div className="modal glass fade-in" onClick={(e) => e.stopPropagation()}>
                         {!submitted ? (
                             <>
-                                <h3>Join the Waitlist</h3>
-                                <p>We'll notify you when Core Structures launches.</p>
-                                <form onSubmit={handleSubmit}>
+                                <h3 className="modal-title">Ascend to Mastery</h3>
+                                <p>Be the first to access the complete 150-pattern repository.</p>
+                                <form onSubmit={handleSubmit} className="modal-form">
                                     <input
                                         type="email"
-                                        placeholder="your@email.com"
+                                        placeholder="Enter your email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         required
+                                        className="modal-input"
                                     />
-                                    <button type="submit" className="btn btn-primary btn-full">
-                                        Get Early Access
+                                    <button type="submit" className="btn btn-primary btn-shine">
+                                        Secure Early Access
                                     </button>
                                 </form>
+                                <button className="modal-close" onClick={() => setShowModal(false)}>✕</button>
                             </>
                         ) : (
                             <div className="success">
                                 <div className="success-icon">✓</div>
-                                <p>You're on the list! We'll notify you soon.</p>
+                                <p>A Scholar has been registered. We shall notify you.</p>
                             </div>
                         )}
                     </div>

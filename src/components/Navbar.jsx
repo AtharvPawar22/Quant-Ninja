@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import ThemeToggle from './ThemeToggle';
 import './Navbar.css';
 
 export default function Navbar() {
@@ -17,10 +18,12 @@ export default function Navbar() {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="navbar">
+    <nav className="navbar glass">
       <div className="navbar-container">
         <Link to="/" className="navbar-brand">
-          <img src="/logo.jpg" alt="QuantNinja" className="navbar-logo" />
+          <div className="brand-logo-wrapper">
+            <img src="/logo.jpg" alt="QuantNinja" className="navbar-logo" />
+          </div>
           <span className="navbar-title">QuantNinja</span>
         </Link>
 
@@ -48,9 +51,12 @@ export default function Navbar() {
               </li>
             ))}
           </ul>
-          <Link to="/course" className="btn btn-primary navbar-cta" onClick={() => setIsOpen(false)}>
-            Start Learning
-          </Link>
+          <div className="navbar-actions">
+            <ThemeToggle />
+            <Link to="/course" className="btn btn-primary btn-shine navbar-cta" onClick={() => setIsOpen(false)}>
+              Start Learning
+            </Link>
+          </div>
         </div>
       </div>
     </nav>

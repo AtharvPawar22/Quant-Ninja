@@ -24,48 +24,55 @@ const postProcessMathText = (text) => {
 
     let processed = text;
 
-    // Common OCR misreadings for mathematical symbols
+    // CAT-specific term corrections (common OCR misreads)
+    const CAT_TERM_CORRECTIONS = {
+        'c p': 'CP', 's p': 'SP', 'c. p.': 'CP', 's. p.': 'SP',
+        'a p': 'AP', 'g p': 'GP', 'h p': 'HP',
+        's i': 'SI', 'c i': 'CI', 's. i.': 'SI', 'c. i.': 'CI',
+        'h c f': 'HCF', 'l c m': 'LCM', 'g c d': 'GCD',
+        'km / hr': 'km/hr', 'km / h': 'km/h', 'm / s': 'm/s',
+        'squre': 'square', 'rout': 'root', 'log10': 'log₁₀'
+    };
+
+    for (const [wrong, correct] of Object.entries(CAT_TERM_CORRECTIONS)) {
+        processed = processed.replace(new RegExp(`\\b${wrong}\\b`, 'gi'), correct);
+    }
+
     const replacements = [
         // Powers and exponents
         [/(\w)\s*\^\s*2\b/g, '$1²'],
         [/(\w)\s*\^\s*3\b/g, '$1³'],
+        [/(\w)\s*\^\s*n\b/gi, '$1ⁿ'],
         [/\bsquare\s*root\b/gi, '√'],
-
-        // Square root - common OCR misreads
-        [/V(\d)/gi, '√$1'],
-        [/sqrt\s*\(/gi, '√('],
+        [/\bsqrt\b/gi, '√'],
 
         // Common math symbols cleanup
-        [/(\d)\s*\/\s*(\d)/g, '$1/$2'], // Clean up fractions
-        [/\(\s+/g, '('], // Remove spaces after (
-        [/\s+\)/g, ')'], // Remove spaces before )
+        [/(\d)\s*\/\s*(\d)/g, '$1/$2'],
+        [/\(\s+/g, '('],
+        [/\s+\)/g, ')'],
 
-        // Pi and other constants
-        [/\bpi\b/gi, 'π'],
-        [/\btheta\b/gi, 'θ'],
-        [/\balpha\b/gi, 'α'],
-        [/\bbeta\b/gi, 'β'],
-        [/\bgamma\b/gi, 'γ'],
+        // Greek letters
+        [/\balpha\b/gi, 'α'], [/\bbeta\b/gi, 'β'], [/\bgamma\b/gi, 'γ'],
+        [/\btheta\b/gi, 'θ'], [/\bpi\b/gi, 'π'], [/\bsigma\b/gi, 'σ'],
 
         // Inequality symbols
-        [/\b(<=|=<)\b/g, '≤'],
-        [/\b(>=|=>)\b/g, '≥'],
-        [/\b(!=|<>)\b/g, '≠'],
+        [/\b(<=|=<)\b/g, '≤'], [/\b(>=|=>)\b/g, '≥'], [/\b(!=|<>)\b/g, '≠'],
 
         // Common OCR digit errors
-        [/\bl(\d)/g, '1$1'], // "l5" -> "15" (l misread as 1)
-        [/O(\d)/g, '0$1'], // "O5" -> "05" (O misread as 0)
+        [/\bl(\d)/g, '1$1'],
+        [/O(\d)/g, '0$1'],
 
-        // Clean up common math terms
+        // Common patterns
         [/\bx\s*x\b/gi, 'x²'],
         [/\by\s*y\b/gi, 'y²'],
+        [/\bf\s*\(x\)/gi, 'f(x)'],
+        [/\blog\s*x\b/gi, 'log(x)']
     ];
 
     for (const [pattern, replacement] of replacements) {
         processed = processed.replace(pattern, replacement);
     }
 
-    // Clean up multiple spaces and newlines
     processed = processed.replace(/\s+/g, ' ');
     processed = processed.replace(/\n\s*\n/g, '\n');
 
