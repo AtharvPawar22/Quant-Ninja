@@ -372,7 +372,7 @@ export default function NotesQuiz() {
                 onClick={handleGenerateQuiz}
                 disabled={files.length === 0 && !notesText.trim()}
             >
-                Generate Quiz 🚀
+                Generate Quiz
             </button>
         </div>
     );
