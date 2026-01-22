@@ -9,49 +9,57 @@ export const TOPIC_TAXONOMY = {
                 displayName: 'Percentages',
                 keywords: ['percentage', 'percent', '%', 'increase', 'decrease', 'hike', 'reduction', 'growth', 'rise', 'fall', 'increment', 'decrement'],
                 formulas: ['successive-percentage', 'percentage-change', 'compound-growth', 'percentage-of'],
-                weight: 1.0
+                weight: 1.0,
+                analytics: { catWeight: 1.1, avgTimeBleed: 15, commonMistakeType: 'calculation' }
             },
             profitLoss: {
                 displayName: 'Profit & Loss',
                 keywords: ['profit', 'loss', 'cost price', 'selling price', 'discount', 'markup', 'margin', 'cp', 'sp', 'mp', 'marked price', 'gain', 'trader', 'merchant', 'shopkeeper', 'sold', 'bought'],
                 formulas: ['profit-percentage', 'discount-formula', 'successive-discounts', 'markup-markdown'],
-                weight: 1.2
+                weight: 1.2,
+                analytics: { catWeight: 1.3, avgTimeBleed: 25, commonMistakeType: 'reading' }
             },
             ratiosProportion: {
                 displayName: 'Ratios & Proportion',
                 keywords: ['ratio', 'proportion', 'mix', 'mixture', 'alligation', 'blend', 'combine', 'parts', 'divide', 'share', 'distributed', 'fraction'],
                 formulas: ['alligation-rule', 'mean-ratio', 'componendo-dividendo', 'ratio-comparison'],
-                weight: 1.0
+                weight: 1.0,
+                analytics: { catWeight: 1.2, avgTimeBleed: 20, commonMistakeType: 'concept' }
             },
             timeSpeed: {
                 displayName: 'Time, Speed & Distance',
                 keywords: ['speed', 'distance', 'time', 'km', 'hr', 'train', 'car', 'boat', 'stream', 'upstream', 'downstream', 'relative speed', 'meet', 'race', 'circular', 'track', 'travel', 'journey', 'km/h', 'km/hr', 'm/s', 'faster', 'slower'],
                 formulas: ['relative-speed', 'boats-streams', 'circular-track', 'train-problems', 'distance=speed×time'],
-                weight: 1.1
+                weight: 1.1,
+                analytics: { catWeight: 1.4, avgTimeBleed: 40, commonMistakeType: 'calculation' }
             },
             timeWork: {
                 displayName: 'Time & Work',
                 keywords: ['work', 'days', 'efficiency', 'pipe', 'fill', 'empty', 'tank', 'job', 'complete', 'together', 'alone', 'cistern', 'inlet', 'outlet', 'finish'],
                 formulas: ['work-rate', 'pipes-cistern', 'alternate-days', 'work=rate×time'],
-                weight: 1.1
+                weight: 1.1,
+                analytics: { catWeight: 1.3, avgTimeBleed: 35, commonMistakeType: 'concept' }
             },
             averages: {
                 displayName: 'Averages',
                 keywords: ['average', 'mean', 'median', 'mode', 'weighted average', 'sum', 'total', 'avg', 'arithmetic mean'],
                 formulas: ['weighted-average', 'group-average', 'average=sum/count'],
-                weight: 0.9
+                weight: 0.9,
+                analytics: { catWeight: 0.8, avgTimeBleed: 10, commonMistakeType: 'calculation' }
             },
             interest: {
                 displayName: 'Simple & Compound Interest',
                 keywords: ['interest', 'simple interest', 'compound interest', 'si', 'ci', 'principal', 'rate', 'annuity', 'installment', 'compounded', 'annually', 'half-yearly', 'quarterly', 'amount', 'maturity'],
                 formulas: ['si-formula', 'ci-formula', 'difference-si-ci', 'P×R×T/100'],
-                weight: 1.0
+                weight: 1.0,
+                analytics: { catWeight: 1.1, avgTimeBleed: 20, commonMistakeType: 'concept' }
             },
             ages: {
                 displayName: 'Ages',
                 keywords: ['age', 'years', 'older', 'younger', 'born', 'present age', 'future', 'past', 'years ago', 'years hence', 'father', 'son', 'mother', 'daughter'],
                 formulas: ['age-ratio-change', 'age-difference-constant'],
-                weight: 0.9
+                weight: 0.9,
+                analytics: { catWeight: 0.7, avgTimeBleed: 10, commonMistakeType: 'reading' }
             },
             clocks: {
                 displayName: 'Clocks & Calendars',
@@ -68,13 +76,15 @@ export const TOPIC_TAXONOMY = {
                 displayName: 'Equations',
                 keywords: ['equation', 'quadratic', 'linear', 'roots', 'polynomial', 'solve', 'variable', 'coefficient', 'discriminant', 'x²', 'ax²+bx+c', 'solutions', 'satisfy'],
                 formulas: ['quadratic-formula', 'sum-of-roots', 'product-of-roots', 'vietas-formulas', '-b/a', 'c/a'],
-                weight: 1.2
+                weight: 1.2,
+                analytics: { catWeight: 1.5, avgTimeBleed: 30, commonMistakeType: 'calculation' }
             },
             functions: {
                 displayName: 'Functions',
                 keywords: ['function', 'f(x)', 'domain', 'range', 'composite', 'inverse', 'onto', 'one-one', 'bijective', 'injective', 'surjective', 'g(x)', 'fog', 'gof'],
                 formulas: ['composite-function', 'inverse-function', 'f(g(x))'],
-                weight: 1.1
+                weight: 1.1,
+                analytics: { catWeight: 1.3, avgTimeBleed: 25, commonMistakeType: 'concept' }
             },
             inequalities: {
                 displayName: 'Inequalities',
@@ -103,13 +113,15 @@ export const TOPIC_TAXONOMY = {
                 displayName: 'Divisibility',
                 keywords: ['divisibility', 'divisible', 'factor', 'multiple', 'hcf', 'lcm', 'gcd', 'prime factor', 'factorization', 'divides', 'common factor', 'common multiple'],
                 formulas: ['divisibility-rules', 'hcf-lcm-product', 'hcf×lcm=product'],
-                weight: 1.0
+                weight: 1.0,
+                analytics: { catWeight: 1.3, avgTimeBleed: 20, commonMistakeType: 'calculation' }
             },
             remainders: {
                 displayName: 'Remainders',
                 keywords: ['remainder', 'modulo', 'mod', 'remainder theorem', 'cyclic', 'pattern', 'divided by', 'leaves remainder', 'cyclicity'],
                 formulas: ['fermats-theorem', 'eulers-theorem', 'chinese-remainder', 'wilson-theorem'],
-                weight: 1.1
+                weight: 1.1,
+                analytics: { catWeight: 1.4, avgTimeBleed: 35, commonMistakeType: 'concept' }
             },
             primes: {
                 displayName: 'Prime Numbers',
@@ -144,7 +156,8 @@ export const TOPIC_TAXONOMY = {
                 displayName: 'Triangles',
                 keywords: ['triangle', 'equilateral', 'isosceles', 'right angle', 'hypotenuse', 'altitude', 'median', 'centroid', 'orthocenter', 'incircle', 'circumcircle', 'similar', 'congruent', 'acute', 'obtuse', 'scalene', 'pythagorean'],
                 formulas: ['area-triangle', 'heron-formula', 'sine-rule', 'cosine-rule', 'similarity-ratios', '1/2×base×height', 'pythagorean-theorem'],
-                weight: 1.2
+                weight: 1.2,
+                analytics: { catWeight: 1.4, avgTimeBleed: 25, commonMistakeType: 'calculation' }
             },
             circles: {
                 displayName: 'Circles',
@@ -185,7 +198,8 @@ export const TOPIC_TAXONOMY = {
                 displayName: 'Arithmetic Progression',
                 keywords: ['arithmetic progression', 'ap', 'common difference', 'arithmetic mean', 'first term', 'last term', 'nth term', 'sum of n terms', 'a.p.', 'd', 'sequence'],
                 formulas: ['ap-nth-term', 'ap-sum', 'arithmetic-mean', 'a+(n-1)d', 'n/2(2a+(n-1)d)', 'n/2(a+l)'],
-                weight: 1.1
+                weight: 1.1,
+                analytics: { catWeight: 1.2, avgTimeBleed: 20, commonMistakeType: 'calculation' }
             },
             gp: {
                 displayName: 'Geometric Progression',

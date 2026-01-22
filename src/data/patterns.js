@@ -10,19 +10,103 @@ export const PATTERNS = [
         name: 'Relative Speed (Opposite)',
         stem: 'Two trains start simultaneously from A and B towards each other...',
         triggers: ['towards each other', 'from opposite ends', 'meet in the middle'],
-        insight: {
-            approach: 'Add the speeds to find the rate at which distance decreases.',
-            formula: 'Speed_Relative = S₁ + S₂',
-            trap: 'Units mismatch (km/hr vs m/s) is the #1 error here.',
-            memory: 'OPPOSITE = ADD (They are helping each other cover the gap)'
-        },
+        catFrequency: 'high',
+        thinkSpeed: '30s',
+        questionFormat: 'both',
+        mentalShortcut: 'OPPOSITE = ADD speeds to find combined rate.',
+        trapAnswer: 'Units mismatch (km/hr vs m/s).',
+        relatedPatterns: ['tsd-circular', 'tsd-train-pole'],
         variants: [
-            'Two runners start from opposite ends of a 400m track...',
-            'A dog and its owner run towards each other from a distance...',
-            'Two cities are 500km apart and cars leave simultaneously towards each other.'
+            {
+                text: 'Two trains start simultaneously from A and B, 450 km apart, towards each other at 40 km/hr and 50 km/hr. When will they meet?',
+                format: 'TITA',
+                answer: 5,
+                solution: 'Relative speed = 40 + 50 = 90 km/hr. Time = 450 / 90 = 5 hours.'
+            },
+            {
+                text: 'Two runners start from opposite ends of a 400m track at 5m/s and 3m/s. They will meet in:',
+                format: 'MCQ',
+                options: ['50s', '40s', '80s', '100s'],
+                answer: '50s',
+                solution: 'Relative speed = 5 + 3 = 8 m/s. Time = 400 / 8 = 50 seconds.'
+            }
         ],
         pyqId: 26,
         distractors: ['Time & Work', 'Average Speed', 'Circular Track']
+    },
+    {
+        id: 'pc-linear-gap',
+        category: 'NUMBER_SYSTEM',
+        subTopic: 'counting',
+        name: 'Gap Method (No two adjacent)',
+        stem: 'In how many ways can 5 boys and 3 girls be seated such that no two girls are together?',
+        triggers: ['no two together', 'not adjacent', 'separated'],
+        catFrequency: 'high',
+        thinkSpeed: '60s',
+        questionFormat: 'both',
+        mentalShortcut: 'Arrange boys first, then place girls in gaps. Ways = n! * (n+1)Cr * r!',
+        trapAnswer: 'Total - (all together) is wrong. "No two together" is different from "not all together".',
+        relatedPatterns: ['pc-linear-arr', 'pc-circular-gap'],
+        variants: [
+            {
+                text: '6 men and 4 women sit in a row. No two women sit together. How many ways?',
+                format: 'TITA',
+                answer: 604800,
+                solution: 'Arrange 6 men: 6! = 720. Gaps = 7. Choose 4 gaps for women: 7C4 = 35. Arrange 4 women: 4! = 24. Total = 720 * 35 * 24 = 604800.'
+            }
+        ],
+        pyqId: 177,
+        distractors: ['Total - Together', 'Circular Arrangement', 'Simple Selection']
+    },
+    {
+        id: 'pc-circular-fixed',
+        category: 'NUMBER_SYSTEM',
+        subTopic: 'counting',
+        name: 'Circular (Fixed Position)',
+        stem: '8 people sit around a table such that the host always sits at a fixed chair...',
+        triggers: ['around a table', 'circular', 'fixed position'],
+        catFrequency: 'medium',
+        thinkSpeed: '30s',
+        questionFormat: 'MCQ',
+        mentalShortcut: 'If one position is fixed, circular becomes linear: (n-1)!',
+        trapAnswer: 'Using n! instead of (n-1)!',
+        relatedPatterns: ['pc-linear-arr', 'pc-circular-gap'],
+        variants: [
+            {
+                text: 'In how many ways can 6 people be seated around a circular table?',
+                format: 'MCQ',
+                options: ['120', '720', '24', '60'],
+                answer: '120',
+                solution: '(6-1)! = 5! = 120.'
+            }
+        ],
+        pyqId: 178,
+        distractors: ['n!', 'nPr', 'nCr']
+    },
+    {
+        id: 'prob-conditional-basic',
+        category: 'NUMBER_SYSTEM',
+        subTopic: 'probability',
+        name: 'Conditional Probability',
+        stem: 'Probability of A given B has occurred...',
+        triggers: ['given that', 'if it is known', 'conditional'],
+        catFrequency: 'high',
+        thinkSpeed: '45s',
+        questionFormat: 'MCQ',
+        mentalShortcut: 'P(A|B) = P(A ∩ B) / P(B)',
+        trapAnswer: 'Using P(A) instead of the reduced sample space P(B).',
+        relatedPatterns: ['prob-independent', 'prob-bayes'],
+        variants: [
+            {
+                text: 'A die is rolled. If it is known that the number is even, what is the probability it is 6?',
+                format: 'MCQ',
+                options: ['1/3', '1/6', '1/2', '2/3'],
+                answer: '1/3',
+                solution: 'Reduced sample space = {2, 4, 6}. Favorable = {6}. Prob = 1/3.'
+            }
+        ],
+        pyqId: 187,
+        distractors: ['1/6', '1/2', '1/4']
     },
     {
         id: 'tsd-circular',
@@ -31,16 +115,20 @@ export const PATTERNS = [
         name: 'Circular Track meeting',
         stem: 'Two runners start at the same point on a circular track of 400m...',
         triggers: ['circular track', 'same point', 'meeting for the first time'],
-        insight: {
-            approach: 'Relative speed applies to circumference. T = L / (S₁ ± S₂)',
-            formula: 'T_first = Length / Relative_Speed',
-            trap: 'Mixing "same direction" (-) and "opposite direction" (+).',
-            memory: 'CIRCULAR = LINEAR but the finish line wraps around to the start.'
-        },
+        catFrequency: 'medium',
+        thinkSpeed: '60s',
+        questionFormat: 'MCQ',
+        mentalShortcut: 'In circular, relative speed is distance around the loop.',
+        trapAnswer: 'Mixing "same direction" (-) and "opposite direction" (+).',
+        relatedPatterns: ['tsd-relative-opp', 'tsd-relative-same'],
         variants: [
-            'A and B run in a loop of 1km...',
-            'Cyclists going around a park and meeting at the starting point...',
-            'Two ants crawling on a round clock face.'
+            {
+                text: 'A and B run in opposite directions on a 400m circular track at 8m/s and 2m/s. After how many seconds will they meet for the first time?',
+                format: 'MCQ',
+                options: ['40s', '50s', '20s', '100s'],
+                answer: '40s',
+                solution: 'Relative speed (opposite) = 8 + 2 = 10 m/s. Time = 400 / 10 = 40s.'
+            }
         ],
         pyqId: 282,
         distractors: ['Relative Speed (Linear)', 'Ratios', 'Percentages']
@@ -54,16 +142,19 @@ export const PATTERNS = [
         name: 'Alternating Work',
         stem: 'A works on Day 1, B on Day 2, C on Day 3, and the cycle repeats...',
         triggers: ['alternating', 'Day 1, Day 2', 'cycle repeats'],
-        insight: {
-            approach: 'Calculate work done in one full cycle (sum of rates).',
-            formula: 'Cycle_Work = R_A + R_B + R_C',
-            trap: 'The last few units of work might not need a full cycle.',
-            memory: 'Think in "Packets" of days instead of individual days.'
-        },
+        catFrequency: 'high',
+        thinkSpeed: '60s',
+        questionFormat: 'both',
+        mentalShortcut: 'Work in one full cycle = sum of rates.',
+        trapAnswer: 'The last few units of work might not need a full cycle.',
+        relatedPatterns: ['work-pipes-drain', 'work-together'],
         variants: [
-            'Three pipes filling a tank one after another every hour...',
-            'A, B and C working on alternate days to build a wall...',
-            'A person reading 10 pages on odd days and 20 on even days.'
+            {
+                text: 'A, B and C can do a work in 12, 15 and 20 days. They work on alternate days starting with A, then B, then C. In how many days is it finished?',
+                format: 'TITA',
+                answer: 15,
+                solution: 'Total work = LCM(12,15,20) = 60. Rates: A=5, B=4, C=3. 3-day cycle work = 5+4+3=12. Cycles needed = 60/12 = 5 cycles. Total days = 5 * 3 = 15 days.'
+            }
         ],
         pyqId: 17,
         distractors: ['Pipes & Cisterns', 'Ratios', 'Averages']
@@ -75,16 +166,20 @@ export const PATTERNS = [
         name: 'Inlet & Outlet Pipes',
         stem: 'Pipe A fills in 10h, Pipe B drains in 15h. If both are open...',
         triggers: ['inlet', 'outlet', 'drains', 'leak'],
-        insight: {
-            approach: 'Fill rate is positive, drain/leak rate is negative.',
-            formula: 'Net_Rate = 1/Inlet - 1/Outlet',
-            trap: 'Not checking if the outlet is faster than the inlet (tank will never fill).',
-            memory: 'It is just addition/subtraction of speed (work per hour).'
-        },
+        catFrequency: 'medium',
+        thinkSpeed: '30s',
+        questionFormat: 'MCQ',
+        mentalShortcut: 'Net Rate = Fill Rate - Drain Rate.',
+        trapAnswer: 'Not checking if the outlet is faster than the inlet.',
+        relatedPatterns: ['work-alternating', 'work-efficiency-change'],
         variants: [
-            'A tank with a leak in the bottom while a tap is filling it...',
-            'Emptying a pool while it is raining...',
-            'Pumping air into a balloon that has a small hole.'
+            {
+                text: 'Pipe A fills a tank in 10 hours and Pipe B empties it in 15 hours. If both are opened together, the tank is full in:',
+                format: 'MCQ',
+                options: ['30h', '25h', '12h', '20h'],
+                answer: '30h',
+                solution: 'Net rate = 1/10 - 1/15 = (3-2)/30 = 1/30. Time = 30 hours.'
+            }
         ],
         pyqId: 51,
         distractors: ['Time & Speed', 'Mixtures', 'Percentages']
@@ -142,16 +237,19 @@ export const PATTERNS = [
         name: 'Quadratic Roots Relationship',
         stem: 'Sum of roots is 5 and product of roots is 6. Find α³ + β³...',
         triggers: ['sum of roots', 'product of roots', 'roots are α and β'],
-        insight: {
-            approach: 'Use algebraic identities to avoid calculating actual roots.',
-            formula: 'α³+β³ = (α+β)³ - 3αβ(α+β)',
-            trap: 'Waste of time solving the quadratic equation manually.',
-            memory: 'Roots are friends; relationships (sum/product) are stronger than individuals.'
-        },
+        catFrequency: 'high',
+        thinkSpeed: '30s',
+        questionFormat: 'both',
+        mentalShortcut: 'α³ + β³ = (α+β)³ - 3αβ(α+β)',
+        trapAnswer: 'Solving the quadratic for roots manually (too slow).',
+        relatedPatterns: ['alg-quad-formation', 'alg-higher-powers'],
         variants: [
-            'Given x² + bx + c = 0, find 1/α + 1/β...',
-            'Finding α² + β² when the equation is known...',
-            'Relationship between coefficients and powers of roots.'
+            {
+                text: 'If the sum of roots of x² + bx + c = 0 is 5 and product is 6, what is the value of α³ + β³?',
+                format: 'TITA',
+                answer: 35,
+                solution: 'α+β = 5, αβ = 6. α³+β³ = 5³ - 3(6)(5) = 125 - 90 = 35.'
+            }
         ],
         pyqId: 2,
         distractors: ['Functions', 'Logarithms', 'Progressions']
@@ -209,16 +307,19 @@ export const PATTERNS = [
         name: 'Multiple Remainders',
         stem: 'N leaves remainder 2 when divided by 3 and 3 when divided by 5...',
         triggers: ['remainder x when divided by a', 'multiple divisors'],
-        insight: {
-            approach: 'Express N = ak + r and iterate to find common value.',
-            formula: 'N = 3k + 2; check k values for (3k+2) mod 5 = 3',
-            trap: 'Not checking if a common difference exists between divisor and remainder.',
-            memory: 'Iterative jumping: Start at 2, jump by 3s until you hit (mod 5 = 3).'
-        },
+        catFrequency: 'high',
+        thinkSpeed: '60s',
+        questionFormat: 'both',
+        mentalShortcut: 'N = ak + r1 = bm + r2. Iterate or use LCM.',
+        trapAnswer: 'Not checking for common difference (Divisor - Remainder).',
+        relatedPatterns: ['num-remainder-theorem', 'num-euler-theorem'],
         variants: [
-            'Smallest number giving remainder 1 with 4, 5, and 6...',
-            'Finding numbers of the form 7k+1 and 11m+2...',
-            'A bell ringing every 4 mins with 1 min offset.'
+            {
+                text: 'A number leaves remainder 2 when divided by 3 and 1 when divided by 4. Smallest such positive number is:',
+                format: 'TITA',
+                answer: 5,
+                solution: 'N = 3k+2. For k=1, N=5. 5 divided by 4 leaves remainder 1. So 5 is the smallest.'
+            }
         ],
         pyqId: 10,
         distractors: ['LCM/HCF', 'Factors', 'Digit Sum']
@@ -435,16 +536,26 @@ export const PATTERNS = [
         name: 'Selection (nCr)',
         stem: 'Choose 2 ladies from 4 and 3 gents from 6 to form a committee...',
         triggers: ['choose', 'select', 'committee', 'without order'],
-        insight: {
-            approach: 'Use combinations (nCr) when the order of selection doesn\'t matter.',
-            formula: 'nCr = n! / [r! * (n-r)!]',
-            trap: 'Using Permutations (nPr) when order is irrelevant (like picking a team).',
-            memory: 'C for Choose (Team), P for Place (Queue).'
-        },
+        catFrequency: 'high',
+        thinkSpeed: '45s',
+        questionFormat: 'both',
+        mentalShortcut: 'C for Choose (Order doesn\'t matter), P for Place (Order matters).',
+        trapAnswer: 'Using Permutations (nPr) when order is irrelevant.',
+        relatedPatterns: ['pc-linear-gap', 'pc-linear-arr'],
         variants: [
-            'Selecting 5 cards from a deck...',
-            'Number of ways to pick fruits from a basket...',
-            'Forming triangles from n points on a plane.'
+            {
+                text: 'How many ways can a committee of 3 be chosen from 10 members?',
+                format: 'TITA',
+                answer: 120,
+                solution: '10C3 = (10*9*8)/(3*2*1) = 120.'
+            },
+            {
+                text: 'Select 2 ladies from 4 and 3 gents from 6 to form a committee. Ways:',
+                format: 'MCQ',
+                options: ['120', '150', '90', '100'],
+                answer: '120',
+                solution: '4C2 * 6C3 = 6 * 20 = 120.'
+            }
         ],
         pyqId: 176,
         distractors: ['Arrangement', 'Probability', 'Factorials']
@@ -456,19 +567,242 @@ export const PATTERNS = [
         name: 'Dice Probability Sum',
         stem: 'Two dice are thrown. Find probability that sum is at least 10...',
         triggers: ['two dice', 'sum of faces', 'at least'],
-        insight: {
-            approach: 'Total outcomes = 6² = 36. Identify favorable pairs.',
-            formula: 'P = Favorable / 36',
-            trap: 'Double counting (5,6) and (6,5) or missing a pair.',
-            memory: 'Sum 7 is the most common (peak of the pyramid).'
-        },
+        catFrequency: 'high',
+        thinkSpeed: '45s',
+        questionFormat: 'MCQ',
+        mentalShortcut: 'Sum 7 is most common (6/36). Favorable/36.',
+        trapAnswer: 'Double counting pairs or missing symmetric cases.',
+        relatedPatterns: ['prob-independent', 'prob-conditional-basic'],
         variants: [
-            'Probability of getting a prime sum with two dice...',
-            'Ways to get a sum < 5...',
-            'Dice games where sum determines the winner.'
+            {
+                text: 'Two dice are thrown. What is the probability that the sum is at least 10?',
+                format: 'MCQ',
+                options: ['1/6', '5/36', '1/12', '1/4'],
+                answer: '1/6',
+                solution: 'Favorable cases: (4,6), (6,4), (5,5), (5,6), (6,5), (6,6) = 6 cases. Prob = 6/36 = 1/6.'
+            }
         ],
         pyqId: 186,
         distractors: ['Independent Events', 'Conditional Prob', 'Permutations']
+    },
+    {
+        id: 'alg-log-base-change',
+        category: 'ALGEBRA',
+        subTopic: 'logarithms',
+        name: 'Log Change of Base',
+        stem: 'If log_2 x + log_4 x + log_16 x = 7...',
+        triggers: ['different bases', 'log with powers as base', 'log_a b'],
+        catFrequency: 'high',
+        thinkSpeed: '45s',
+        questionFormat: 'both',
+        mentalShortcut: 'log_{a^n} x = (1/n) log_a x. Base 4 is 2^2, so multiplier is 1/2.',
+        trapAnswer: 'Adding logs with different bases directly without converting.',
+        relatedPatterns: ['alg-log-product', 'alg-exponential'],
+        variants: [
+            {
+                text: 'Solve for x: log_3 x + log_9 x + log_27 x = 11/2',
+                format: 'TITA',
+                answer: 27,
+                solution: 'log_3 x + 1/2 log_3 x + 1/3 log_3 x = 11/2 => (1 + 1/2 + 1/3) log_3 x = 11/6 log_3 x = 11/2 => log_3 x = 3 => x = 27.'
+            }
+        ],
+        pyqId: 9,
+        distractors: ['Exponents', 'Functions', 'Progressions']
+    },
+    {
+        id: 'alg-func-composite',
+        category: 'ALGEBRA',
+        subTopic: 'functions',
+        name: 'Composite Functions',
+        stem: 'If f(x) = 2x+3 and g(x) = x², find f(g(x))...',
+        triggers: ['f(g(x))', 'fog', 'composite', 'nested function'],
+        catFrequency: 'high',
+        thinkSpeed: '30s',
+        questionFormat: 'MCQ',
+        mentalShortcut: 'Work from inside out: evaluate g(x) first, then plug into f.',
+        trapAnswer: 'Confusing f(g(x)) with f(x)*g(x).',
+        relatedPatterns: ['alg-func-inverse', 'alg-func-domain'],
+        variants: [
+            {
+                text: 'If f(x) = x - 1 and g(x) = x² + 1, find f(g(2)).',
+                format: 'MCQ',
+                options: ['4', '5', '3', '2'],
+                answer: '4',
+                solution: 'g(2) = 2² + 1 = 5. f(g(2)) = f(5) = 5 - 1 = 4.'
+            }
+        ],
+        pyqId: 75,
+        distractors: ['Product of Functions', 'Inverse Functions', 'Domain']
+    },
+    {
+        id: 'alg-mod-ineq',
+        category: 'ALGEBRA',
+        subTopic: 'inequalities',
+        name: 'Modulus Inequalities',
+        stem: 'Solve for x: |x - 3| < 5...',
+        triggers: ['|x - a|', 'absolute value', 'inequality', 'range of x'],
+        catFrequency: 'high',
+        thinkSpeed: '30s',
+        questionFormat: 'both',
+        mentalShortcut: '|x-a| < k means -k < x-a < k. Distance from a is less than k.',
+        trapAnswer: 'Only considering the positive case x-3 < 5.',
+        relatedPatterns: ['alg-mod-eq', 'alg-ineq-am-gm'],
+        variants: [
+            {
+                text: 'How many integer values of x satisfy |x + 2| <= 3?',
+                format: 'TITA',
+                answer: 7,
+                solution: '-3 <= x + 2 <= 3 => -5 <= x <= 1. Integers: -5, -4, -3, -2, -1, 0, 1. Total = 7.'
+            }
+        ],
+        pyqId: 164,
+        distractors: ['Linear Equations', 'Absolute Difference', 'Quadratic']
+    },
+    {
+        id: 'geo-coord-section',
+        category: 'GEOMETRY',
+        subTopic: 'coordinate',
+        name: 'Section Formula',
+        stem: 'Find coordinates of point P dividing line segment joining (1,2) and (4,8) in ratio 2:1...',
+        triggers: ['dividing', 'ratio m:n', 'internally', 'coordinates of point'],
+        catFrequency: 'medium',
+        thinkSpeed: '45s',
+        questionFormat: 'both',
+        mentalShortcut: 'x = (mx2 + nx1)/(m+n), y = (my2 + ny1)/(m+n). Cross-multiply the ratio with coordinates.',
+        trapAnswer: 'Swapping m and n in the formula.',
+        relatedPatterns: ['geo-coord-midpoint', 'geo-coord-centroid'],
+        variants: [
+            {
+                text: 'Point P divides AB in ratio 3:2. A is (1, -2) and B is (6, 8). x-coordinate of P is:',
+                format: 'TITA',
+                answer: 4,
+                solution: 'x = (3*6 + 2*1)/(3+2) = (18+2)/5 = 20/5 = 4.'
+            }
+        ],
+        pyqId: 168,
+        distractors: ['Midpoint Formula', 'Distance Formula', 'Slope']
+    },
+    {
+        id: 'geo-sim-tri-area',
+        category: 'GEOMETRY',
+        subTopic: 'triangles',
+        name: 'Similar Triangles (Area)',
+        stem: 'Ratio of sides of two similar triangles is 4:9. Find ratio of areas...',
+        triggers: ['similar triangles', 'ratio of sides', 'area ratio'],
+        catFrequency: 'high',
+        thinkSpeed: '15s',
+        questionFormat: 'MCQ',
+        mentalShortcut: 'Area ratio = (Side ratio)². Side ratio = √(Area ratio).',
+        trapAnswer: 'Using the side ratio directly without squaring.',
+        relatedPatterns: ['geo-sim-tri-perimeter', 'geo-properties-centroid'],
+        variants: [
+            {
+                text: 'The areas of two similar triangles are 25 cm² and 36 cm². If the side of the first is 10 cm, find the corresponding side of the second.',
+                format: 'MCQ',
+                options: ['12 cm', '14.4 cm', '8.33 cm', '15 cm'],
+                answer: '12 cm',
+                solution: 'Area ratio = 25/36. Side ratio = √(25/36) = 5/6. 5/6 = 10/x => x = 12.'
+            }
+        ],
+        pyqId: 3,
+        distractors: ['Perimeter Ratio', 'Congruence', 'Median Ratio']
+    },
+    {
+        id: 'geo-mens-cone-sphere',
+        category: 'GEOMETRY',
+        subTopic: 'mensuration',
+        name: 'Volume Comparison (Cone/Sphere)',
+        stem: 'A cone and a sphere have equal radius R. If their volumes are equal, find height of cone...',
+        triggers: ['equal radius', 'equal volume', 'cone', 'sphere', 'height'],
+        catFrequency: 'medium',
+        thinkSpeed: '45s',
+        questionFormat: 'both',
+        mentalShortcut: 'V_cone = 1/3 πR²h, V_sphere = 4/3 πR³. Equate and cancel 1/3 πR².',
+        trapAnswer: 'Forgetting the 1/3 in cone volume or 4/3 in sphere volume.',
+        relatedPatterns: ['geo-mens-cylinder', 'geo-mens-surface-area'],
+        variants: [
+            {
+                text: 'If a cone of radius r and height h is melted to form a sphere of same radius, find h in terms of r.',
+                format: 'TITA',
+                answer: 4,
+                solution: '1/3 πr²h = 4/3 πr³ => h = 4r. Answer factor is 4.'
+            }
+        ],
+        pyqId: 156,
+        distractors: ['Surface Area', 'Cylinder Volume', 'Total Surface Area']
+    },
+    {
+        id: 'num-euler-totient',
+        category: 'NUMBER_SYSTEM',
+        subTopic: 'remainders',
+        name: "Euler's Totient Remainder",
+        stem: 'Find the remainder when a^n is divided by m, where a and m are co-prime...',
+        triggers: ['remainder', 'co-prime', 'large power', 'divided by'],
+        catFrequency: 'medium',
+        thinkSpeed: '60s',
+        questionFormat: 'both',
+        mentalShortcut: "a^Φ(m) ≡ 1 (mod m). Reduce power n mod Φ(m).",
+        trapAnswer: "Using Fermat's Little Theorem when the divisor is not prime.",
+        relatedPatterns: ['num-remainder-theorem', 'num-chinese-rem'],
+        variants: [
+            {
+                text: 'Find the remainder when 3^102 is divided by 10.',
+                format: 'TITA',
+                answer: 9,
+                solution: 'Φ(10) = 10(1-1/2)(1-1/5) = 4. 102 mod 4 = 2. 3^2 mod 10 = 9.'
+            }
+        ],
+        pyqId: 108,
+        distractors: ['Unit Digit', 'Pattern Matching', 'Cyclicity']
+    },
+    {
+        id: 'num-factor-count',
+        category: 'NUMBER_SYSTEM',
+        subTopic: 'factors',
+        name: 'Total Number of Factors',
+        stem: 'Find the number of factors of 720...',
+        triggers: ['number of factors', 'divisors', 'how many factors'],
+        catFrequency: 'high',
+        thinkSpeed: '30s',
+        questionFormat: 'both',
+        mentalShortcut: 'Prime factorize: 2^a * 3^b * ... Count = (a+1)(b+1)...',
+        trapAnswer: 'Missing a prime factor during factorization.',
+        relatedPatterns: ['num-factor-sum', 'num-factor-product'],
+        variants: [
+            {
+                text: 'How many factors does 120 have?',
+                format: 'TITA',
+                answer: 16,
+                solution: '120 = 2³ * 3¹ * 5¹. Count = (3+1)(1+1)(1+1) = 4 * 2 * 2 = 16.'
+            }
+        ],
+        pyqId: 124,
+        distractors: ['Prime Factors', 'Sum of Factors', 'Odd Factors']
+    },
+    {
+        id: 'num-unit-digit-complex',
+        category: 'NUMBER_SYSTEM',
+        subTopic: 'digits',
+        name: 'Complex Unit Digit',
+        stem: 'Find the unit digit of (17^23) * (13^45) * (12^67)...',
+        triggers: ['unit digit', 'last digit', 'product of powers'],
+        catFrequency: 'high',
+        thinkSpeed: '45s',
+        questionFormat: 'MCQ',
+        mentalShortcut: 'Find cyclicity of each base. Reduce each power mod 4 (or its cycle). Multiply unit digits.',
+        trapAnswer: 'Calculating the full product or not observing cyclicity of 4.',
+        relatedPatterns: ['num-remainder-theorem', 'num-base-system'],
+        variants: [
+            {
+                text: 'The unit digit of 2^33 * 3^44 is:',
+                format: 'MCQ',
+                options: ['2', '4', '6', '8'],
+                answer: '2',
+                solution: '2^33: 33 mod 4 = 1 => 2^1 = 2. 3^44: 44 mod 4 = 0 => 3^4 = 1. 2 * 1 = 2.'
+            }
+        ],
+        pyqId: 107,
+        distractors: ['Tens Digit', 'Remainder System', 'Factors']
     }
 ];
 

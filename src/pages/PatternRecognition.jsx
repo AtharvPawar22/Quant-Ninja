@@ -23,11 +23,14 @@ export default function PatternRecognition() {
             : PATTERNS.filter(p => p.category === config.category);
 
         // Shuffle and pick 10
-        const shuffled = filtered.sort(() => 0.5 - Math.random()).slice(0, 10).map(p => ({
-            ...p,
-            shuffledOptions: p.distractors.concat(p.name).sort(() => Math.random() - 0.5),
-            activeVariant: p.variants ? p.variants[Math.floor(Math.random() * p.variants.length)] : null
-        }));
+        const shuffled = filtered.sort(() => 0.5 - Math.random()).slice(0, 10).map(p => {
+            const variant = p.variants ? p.variants[Math.floor(Math.random() * p.variants.length)] : null;
+            return {
+                ...p,
+                shuffledOptions: p.distractors ? p.distractors.concat(p.name).sort(() => Math.random() - 0.5) : [],
+                activeVariant: variant
+            };
+        });
 
         setSessionPatterns(shuffled);
         setIdx(0);
@@ -253,6 +256,11 @@ export default function PatternRecognition() {
 
                         <div className="pattern-stem-card">
                             <p>{currentPattern.stem}</p>
+                            {currentPattern.catFrequency && (
+                                <div className={`frequency-badge ${currentPattern.catFrequency}`}>
+                                    {currentPattern.catFrequency.toUpperCase()} FREQUENCY
+                                </div>
+                            )}
                         </div>
 
                         <div className="pattern-options">
@@ -364,20 +372,20 @@ export default function PatternRecognition() {
                                         <div className="approach-grid">
                                             <div className="approach-main">
                                                 <h5>THE APPROACH</h5>
-                                                <div className="approach-text">{currentPattern.insight?.approach}</div>
+                                                <div className="approach-text">{currentPattern.insight?.approach || currentPattern.mentalShortcut}</div>
                                                 <div className="formula-display">
-                                                    <code>{currentPattern.insight?.formula}</code>
+                                                    <code>{currentPattern.insight?.formula || currentPattern.mentalShortcut}</code>
                                                 </div>
                                             </div>
                                             <div className="approach-side">
                                                 <h5>QUICK TIPS</h5>
                                                 <div className="trap-callout">
                                                     <span>Avoid the Trap</span>
-                                                    {currentPattern.insight?.trap}
+                                                    {currentPattern.insight?.trap || currentPattern.trapAnswer}
                                                 </div>
                                                 <div className="memory-callout">
                                                     <span>Memory Hook</span>
-                                                    {currentPattern.insight?.memory}
+                                                    {currentPattern.insight?.memory || currentPattern.mentalShortcut}
                                                 </div>
                                             </div>
                                         </div>
@@ -416,17 +424,44 @@ export default function PatternRecognition() {
 
                         <div className="variant-card">
                             <div className="variant-question">
-                                "{currentPattern.activeVariant}"
+                                "{currentPattern.activeVariant?.text || currentPattern.activeVariant}"
                             </div>
 
                             {variantResult === null ? (
-                                <div className="variant-actions">
-                                    <button className="selector-btn active" onClick={() => handleVariantGuess(true)}>
-                                        Is the same pattern
-                                    </button>
-                                    <button className="selector-btn" onClick={() => handleVariantGuess(false)}>
-                                        Is a different pattern
-                                    </button>
+                                <div className="variant-solve-section">
+                                    {currentPattern.activeVariant?.format === 'TITA' ? (
+                                        <div className="variant-tita-input">
+                                            <input
+                                                type="number"
+                                                placeholder="Enter numeric answer"
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') handleVariantGuess(e.target.value == currentPattern.activeVariant.answer);
+                                                }}
+                                            />
+                                            <button className="solve-btn" onClick={(e) => handleVariantGuess(e.target.previousSibling.value == currentPattern.activeVariant.answer)}>Submit</button>
+                                        </div>
+                                    ) : currentPattern.activeVariant?.options ? (
+                                        <div className="variant-mcq-options">
+                                            {currentPattern.activeVariant.options.map(opt => (
+                                                <button
+                                                    key={opt}
+                                                    className="selector-btn"
+                                                    onClick={() => handleVariantGuess(opt === currentPattern.activeVariant.answer)}
+                                                >
+                                                    {opt}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="variant-actions">
+                                            <button className="selector-btn active" onClick={() => handleVariantGuess(true)}>
+                                                Is the same pattern
+                                            </button>
+                                            <button className="selector-btn" onClick={() => handleVariantGuess(false)}>
+                                                Is a different pattern
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             ) : (
                                 <div className={`result ${variantResult === 'correct' ? 'correct' : 'wrong'}`}>

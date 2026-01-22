@@ -567,6 +567,7 @@
         grid-template-columns: 1fr;
     }
 }
+
 /* =========================================
    OFFICIAL CAT EXAM UI STYLING 
    ========================================= */
@@ -577,7 +578,7 @@
     --cat-red: #ff0000;
     --cat-bg: #f5f7f9;
     --cat-border: #d1d9e0;
-    
+
     /* CAT Status Colors */
     --cat-status-answered: #28a745;
     --cat-status-not-answered: #dc3545;
@@ -666,7 +667,8 @@
     flex-shrink: 0 !important;
 }
 
-.question-type, .question-marks {
+.question-type,
+.question-marks {
     color: var(--cat-red) !important;
     font-weight: 600 !important;
     font-size: 0.85rem !important;
@@ -706,6 +708,52 @@
     background: #fafafa !important;
     border-radius: 6px !important;
     white-space: pre-wrap !important;
+}
+
+.question-header-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 20px !important;
+}
+
+.question-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+}
+
+.bookmark-btn {
+    background: none !important;
+    border: 1px solid var(--cat-border) !important;
+    padding: 5px 12px !important;
+    border-radius: 4px !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    color: #666 !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+}
+
+.bookmark-btn:hover {
+    background-color: #f8f9fa !important;
+    border-color: var(--cat-blue) !important;
+    color: var(--cat-blue) !important;
+}
+
+.bookmark-btn.active {
+    background-color: #fff9e6 !important;
+    border-color: #f39c12 !important;
+    color: #f39c12 !important;
+}
+
+.question-counter {
+    font-family: monospace !important;
+    font-weight: 700 !important;
+    background: #eee !important;
+    padding: 2px 8px !important;
+    border-radius: 4px !important;
+    font-size: 0.9rem !important;
 }
 
 /* MCQ Options */
@@ -812,7 +860,8 @@
     background: #f0f0f0 !important;
 }
 
-.numpad-btn.backspace, .numpad-btn.clear-all {
+.numpad-btn.backspace,
+.numpad-btn.clear-all {
     width: 100% !important;
 }
 
@@ -825,9 +874,22 @@
     border-top: 1px solid #eee !important;
 }
 
-.controls-left {
+.controls-left,
+.controls-right {
     display: flex !important;
     gap: 15px !important;
+    flex: 1 !important;
+}
+
+.controls-center {
+    display: flex !important;
+    gap: 15px !important;
+    justify-content: center !important;
+    flex: 2 !important;
+}
+
+.controls-right {
+    justify-content: flex-end !important;
 }
 
 .cat-btn {
@@ -860,6 +922,17 @@
     filter: brightness(0.9) !important;
 }
 
+.cat-btn.prev {
+    background-color: #f8f9fa !important;
+    color: #333 !important;
+    border: 1px solid #ccc !important;
+}
+
+.cat-btn:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}
+
 /* Sidebar Section */
 .cat-sidebar {
     background-color: #f0f4f8 !important;
@@ -878,47 +951,65 @@
     border-bottom: 1px solid var(--cat-border) !important;
 }
 
+.cat-legend {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    padding: 15px !important;
+    background: white !important;
+    border-top: 1px solid var(--cat-border) !important;
+    border-bottom: 1px solid var(--cat-border) !important;
+    margin-top: auto !important;
+}
+
 .legend-item {
     display: flex !important;
     align-items: center !important;
-    gap: 8px !important;
+    gap: 10px !important;
+    font-size: 0.8rem !important;
+    color: #444 !important;
 }
 
 .legend-box {
-    width: 24px !important;
-    height: 24px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    color: white !important;
-    font-size: 0.75rem !important;
-    font-weight: 700 !important;
+    width: 22px !important;
+    height: 22px !important;
     border-radius: 2px !important;
+    border: 1px solid #ddd !important;
 }
 
-.legend-text {
-    font-size: 0.7rem !important;
-    color: #555 !important;
-    white-space: nowrap !important;
+.legend-box.answered {
+    background-color: var(--cat-status-answered) !important;
 }
 
-.legend-box.answered { background-color: var(--cat-status-answered) !important; }
-.legend-box.not-answered { background-color: var(--cat-status-not-answered) !important; }
-.legend-box.not-visited { background-color: var(--cat-status-not-visited) !important; }
-.legend-box.marked { background-color: var(--cat-status-marked) !important; }
-.legend-box.answered-marked { 
+.legend-box.not-answered {
+    background-color: var(--cat-status-not-answered) !important;
+    border-radius: 0 0 8px 8px !important;
+}
+
+.legend-box.not-visited {
+    background-color: white !important;
+    border: 1px solid #ccc !important;
+}
+
+.legend-box.marked {
+    background-color: var(--cat-status-marked) !important;
+    border-radius: 50% !important;
+}
+
+.legend-box.answered-marked {
     background-color: var(--cat-status-answered) !important;
     position: relative !important;
 }
+
 .legend-box.answered-marked::after {
     content: '' !important;
     position: absolute !important;
-    width: 10px !important;
-    height: 10px !important;
+    width: 8px !important;
+    height: 8px !important;
     background: var(--cat-status-marked) !important;
     border-radius: 50% !important;
-    bottom: -2px !important;
-    right: -2px !important;
+    top: -3px !important;
+    right: -3px !important;
     border: 1px solid white !important;
 }
 
@@ -964,22 +1055,22 @@
     box-shadow: 0 0 0 2px var(--cat-blue) inset !important;
 }
 
-.grid-btn.answered { 
-    background-color: var(--cat-status-answered) !important; 
-    color: white !important; 
+.grid-btn.answered {
+    background-color: var(--cat-status-answered) !important;
+    color: white !important;
     border-color: var(--cat-status-answered) !important;
 }
 
-.grid-btn.not-answered { 
-    background-color: var(--cat-status-not-answered) !important; 
-    color: white !important; 
+.grid-btn.not-answered {
+    background-color: var(--cat-status-not-answered) !important;
+    color: white !important;
     border-color: var(--cat-status-not-answered) !important;
     border-radius: 0 0 10px 10px !important;
 }
 
-.grid-btn.marked { 
-    background-color: var(--cat-status-marked) !important; 
-    color: white !important; 
+.grid-btn.marked {
+    background-color: var(--cat-status-marked) !important;
+    color: white !important;
     border-color: var(--cat-status-marked) !important;
     border-radius: 50% !important;
 }
@@ -1039,7 +1130,7 @@
     border-radius: 12px !important;
     width: 90% !important;
     max-width: 450px !important;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
 }
 
 .modal-content h3 {
@@ -1093,11 +1184,21 @@
 }
 
 @keyframes cat-pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.7; }
-    100% { opacity: 1; }
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }
 
 @keyframes cat-blink {
-    50% { opacity: 0; }
+    50% {
+        opacity: 0;
+    }
 }

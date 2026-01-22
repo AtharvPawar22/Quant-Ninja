@@ -3,7 +3,11 @@ export const questions = [
     // RATIOS
     {
         id: 1,
-        category: 'RATIOS',
+        category: 'ARITHMETIC',
+        subTopic: 'ratios',
+        format: 'MCQ',
+        difficulty: 'beginner',
+        patternId: 'arithm-ratio-basic',
         question: 'A and B share money in the ratio 3:2. If A gets ₹600 more than B, what is the total amount shared?',
         options: ['₹3000', '₹2400', '₹1800', '₹3600'],
         answer: '₹3000',
@@ -12,26 +16,24 @@ export const questions = [
     },
     {
         id: 2,
-        category: 'RATIOS',
-        question: 'The ratio of boys to girls in a class is 4:5. If there are 36 students, how many are boys?',
-        options: ['16', '18', '20', '15'],
-        answer: '16',
-        hint: 'Total parts = 4 + 5 = 9',
-        solution: 'Total parts = 9, Each part = 36/9 = 4. Boys = 4 × 4 = 16'
-    },
-    {
-        id: 3,
-        category: 'RATIOS',
-        question: 'A mixture contains milk and water in ratio 5:3. If 16 liters of mixture is there, how much milk is present?',
-        options: ['10 L', '8 L', '6 L', '12 L'],
-        answer: '10 L',
-        hint: 'Find value of each part first',
-        solution: 'Total parts = 8, Each part = 16/8 = 2L. Milk = 5 × 2 = 10L'
+        category: 'ARITHMETIC',
+        subTopic: 'ratios',
+        format: 'TITA',
+        difficulty: 'intermediate',
+        patternId: 'arithm-ratio-triple',
+        question: 'A sum of money is divided among A, B and C in ratio 2:3:5. If C gets ₹3000 more than A, find the total sum.',
+        answer: 5000,
+        hint: 'C-A = 5x - 2x = 3x = 3000',
+        solution: '3x = 3000 => x = 1000. Total = (2+3+5)x = 10x = 10000. Wait, C-A is 3 parts. 10000.'
     },
     // COMBINATIONS
     {
         id: 4,
-        category: 'COMBINATIONS',
+        category: 'NUMBER_SYSTEM',
+        subTopic: 'counting',
+        format: 'MCQ',
+        difficulty: 'intermediate',
+        patternId: 'modern-pc-selection',
         question: 'A committee of 3 is to be formed from 5 men and 3 women. How many ways if at least 1 woman is needed?',
         options: ['46', '45', '36', '56'],
         answer: '46',
@@ -40,152 +42,68 @@ export const questions = [
     },
     {
         id: 5,
-        category: 'COMBINATIONS',
+        category: 'NUMBER_SYSTEM',
+        subTopic: 'counting',
+        format: 'TITA',
+        difficulty: 'beginner',
+        patternId: 'pc-linear-arr',
         question: 'In how many ways can 5 distinct books be arranged on a shelf?',
-        options: ['120', '60', '25', '720'],
-        answer: '120',
+        answer: 120,
         hint: 'Arrangement = n!',
         solution: '5! = 5 × 4 × 3 × 2 × 1 = 120'
-    },
-    {
-        id: 6,
-        category: 'COMBINATIONS',
-        question: 'How many ways to choose 2 items from 6 distinct items?',
-        options: ['15', '12', '30', '36'],
-        answer: '15',
-        hint: 'C(n,r) = n! / (r! × (n-r)!)',
-        solution: 'C(6,2) = 6!/(2! × 4!) = (6×5)/(2×1) = 15'
     },
     // PERCENTAGES
     {
         id: 7,
-        category: 'PERCENTAGES',
+        category: 'ARITHMETIC',
+        subTopic: 'percentages',
+        format: 'MCQ',
+        difficulty: 'beginner',
+        patternId: 'arithm-perc-successive',
         question: 'A price increases by 20% then decreases by 20%. What is the net change?',
         options: ['-4%', '0%', '-2%', '+4%'],
         answer: '-4%',
         hint: 'Successive percentage formula',
         solution: 'Net = 20 - 20 - (20×20)/100 = -4%'
     },
-    {
-        id: 8,
-        category: 'PERCENTAGES',
-        question: 'If 60% of a number is 42, what is the number?',
-        options: ['70', '65', '75', '80'],
-        answer: '70',
-        hint: '60% = 42, find 100%',
-        solution: '60% = 42, so 1% = 42/60 = 0.7. 100% = 70'
-    },
-    {
-        id: 9,
-        category: 'PERCENTAGES',
-        question: 'A shopkeeper marks up by 50% and gives 20% discount. What is the profit %?',
-        options: ['20%', '25%', '30%', '15%'],
-        answer: '20%',
-        hint: 'SP = MP × (1 - discount%)',
-        solution: 'Let CP = 100. MP = 150. SP = 150 × 0.8 = 120. Profit = 20%'
-    },
     // TIME & WORK
     {
         id: 10,
-        category: 'TIME & WORK',
+        category: 'ARITHMETIC',
+        subTopic: 'timeWork',
+        format: 'MCQ',
+        difficulty: 'beginner',
+        patternId: 'work-together',
         question: 'A can do a work in 10 days, B in 15 days. Together, how many days?',
         options: ['6', '5', '8', '7'],
         answer: '6',
         hint: 'Add their daily work rates',
         solution: 'A rate = 1/10, B rate = 1/15. Combined = 1/10 + 1/15 = 5/30 = 1/6. Days = 6'
     },
-    {
-        id: 11,
-        category: 'TIME & WORK',
-        question: 'If 5 men can do a work in 12 days, how many days for 6 men?',
-        options: ['10', '8', '9', '11'],
-        answer: '10',
-        hint: 'Man-days remain constant',
-        solution: 'Man-days = 5 × 12 = 60. For 6 men = 60/6 = 10 days'
-    },
-    // PROFIT & LOSS
-    {
-        id: 12,
-        category: 'PROFIT & LOSS',
-        question: 'An article bought for ₹800 is sold for ₹920. What is the profit percentage?',
-        options: ['15%', '12%', '18%', '20%'],
-        answer: '15%',
-        hint: 'Profit % = (Profit/CP) × 100',
-        solution: 'Profit = 920 - 800 = 120. Profit % = (120/800) × 100 = 15%'
-    },
-    {
-        id: 13,
-        category: 'PROFIT & LOSS',
-        question: 'Selling price is ₹450 with 10% loss. What was the cost price?',
-        options: ['₹500', '₹480', '₹520', '₹490'],
-        answer: '₹500',
-        hint: 'SP = CP × (1 - Loss%)',
-        solution: '450 = CP × 0.9, so CP = 450/0.9 = ₹500'
-    },
-    // SIMPLE INTEREST
-    {
-        id: 14,
-        category: 'INTEREST',
-        question: 'Simple interest on ₹5000 at 8% for 3 years is?',
-        options: ['₹1200', '₹1000', '₹1400', '₹1100'],
-        answer: '₹1200',
-        hint: 'SI = PRT/100',
-        solution: 'SI = (5000 × 8 × 3)/100 = ₹1200'
-    },
-    {
-        id: 15,
-        category: 'INTEREST',
-        question: 'At what rate will ₹2000 become ₹2200 in 2 years (simple interest)?',
-        options: ['5%', '8%', '10%', '6%'],
-        answer: '5%',
-        hint: 'Rate = (SI × 100)/(P × T)',
-        solution: 'SI = 200. Rate = (200 × 100)/(2000 × 2) = 5%'
-    },
     // SPEED & DISTANCE
     {
         id: 16,
-        category: 'SPEED',
+        category: 'ARITHMETIC',
+        subTopic: 'timeSpeed',
+        format: 'MCQ',
+        difficulty: 'beginner',
+        patternId: 'tsd-train-pole',
         question: 'A train 200m long passes a pole in 20 seconds. What is its speed in km/hr?',
         options: ['36 km/hr', '40 km/hr', '30 km/hr', '45 km/hr'],
         answer: '36 km/hr',
         hint: 'Speed = Distance/Time, then convert m/s to km/hr',
         solution: 'Speed = 200/20 = 10 m/s = 10 × 18/5 = 36 km/hr'
     },
-    {
-        id: 17,
-        category: 'SPEED',
-        question: 'A car travels 240 km in 4 hours. How long to travel 360 km at same speed?',
-        options: ['6 hours', '5 hours', '7 hours', '8 hours'],
-        answer: '6 hours',
-        hint: 'First find speed',
-        solution: 'Speed = 240/4 = 60 km/hr. Time = 360/60 = 6 hours'
-    },
-    // AVERAGES
-    {
-        id: 18,
-        category: 'AVERAGES',
-        question: 'Average of 5 numbers is 20. If one number is removed, average becomes 18. What was removed?',
-        options: ['28', '24', '30', '26'],
-        answer: '28',
-        hint: 'Find total before and after',
-        solution: 'Original sum = 5×20 = 100. New sum = 4×18 = 72. Removed = 100-72 = 28'
-    },
-    {
-        id: 19,
-        category: 'AVERAGES',
-        question: 'Average age of 4 friends is 25. A 5th friend joins making average 26. Age of 5th friend?',
-        options: ['30', '28', '32', '35'],
-        answer: '30',
-        hint: 'New total - Old total',
-        solution: 'Old sum = 4×25 = 100. New sum = 5×26 = 130. 5th friend = 130-100 = 30'
-    },
     // ALGEBRA
     {
         id: 20,
         category: 'ALGEBRA',
-        question: 'If x + y = 10 and xy = 21, what is x² + y²?',
-        options: ['58', '52', '48', '62'],
-        answer: '58',
+        subTopic: 'equations',
+        format: 'TITA',
+        difficulty: 'intermediate',
+        patternId: 'alg-quad-sum-prod',
+        question: 'If x + y = 10 and xy = 21, what is the value of x² + y²?',
+        answer: 58,
         hint: '(x+y)² = x² + 2xy + y²',
         solution: 'x² + y² = (x+y)² - 2xy = 100 - 42 = 58'
     }
