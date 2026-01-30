@@ -1379,56 +1379,221 @@ export const coreStructures = {
         // NUMBER SYSTEM (11 questions)
         // ═══════════════════════════════════════════════════════════════════
 
-        { id: "ns-001", topic: "Number System", subtopic: "Divisibility", difficulty: "Easy", type: "MCQ", question: "Which is divisible by 3: 124, 126, 128, 130?", options: ["124", "126", "128", "130"], correctAnswer: 1, recognitionTrigger: "Sum of digits divisible by 3", mentalShortcut: "1+2+6 = 9, divisible by 3", solution: { approach: "Digit sum test", steps: ["126: 1+2+6=9 ✓"], timeToSolve: "15 sec" }, tags: ["divisibility-3"] },
-        { id: "ns-002", topic: "Number System", subtopic: "Divisibility", difficulty: "Medium", type: "TITA", question: "Remainder when 2^100 is divided by 3.", options: null, correctAnswer: 1, recognitionTrigger: "Find pattern in remainders", mentalShortcut: "2%3=2, 4%3=1, 8%3=2, 16%3=1... Pattern: 2,1,2,1. 100 even → rem 1", solution: { approach: "Find cycle", steps: ["2^1%3=2, 2^2%3=1", "Cycle of 2", "100 even → 1"], timeToSolve: "1 min" }, tags: ["remainder-pattern"] },
-        { id: "ns-003", topic: "Number System", subtopic: "Divisibility", difficulty: "Medium", type: "MCQ", question: "Largest number that divides 35, 56, 91 leaving remainder 7 each.", options: ["7", "14", "21", "28"], correctAnswer: 1, recognitionTrigger: "HCF of (n - remainder)", mentalShortcut: "HCF(28, 49, 84) = 7... wait: 35-7=28, 56-7=49, 91-7=84. HCF = 7", solution: { approach: "HCF(35-7, 56-7, 91-7)", steps: ["HCF(28,49,84) = 7"], timeToSolve: "1 min" }, tags: ["HCF-remainder"] },
-        { id: "ns-004", topic: "Number System", subtopic: "HCF LCM", difficulty: "Easy", type: "MCQ", question: "HCF of 12 and 18.", options: ["2", "3", "6", "36"], correctAnswer: 2, recognitionTrigger: "Common factors", mentalShortcut: "12 = 2²×3, 18 = 2×3². HCF = 6", solution: { approach: "Take min powers", steps: ["HCF = 2×3 = 6"], timeToSolve: "20 sec" }, tags: ["HCF"] },
-        { id: "ns-005", topic: "Number System", subtopic: "HCF LCM", difficulty: "Medium", type: "TITA", question: "LCM of 12, 15, 20.", options: null, correctAnswer: 60, recognitionTrigger: "Take max powers", mentalShortcut: "2²×3×5 = 60", solution: { approach: "Prime factorization", steps: ["12=2²×3, 15=3×5, 20=2²×5", "LCM = 2²×3×5 = 60"], timeToSolve: "45 sec" }, tags: ["LCM"] },
-        { id: "ns-006", topic: "Number System", subtopic: "HCF LCM", difficulty: "Hard", type: "MCQ", question: "Product of two numbers is 1680. HCF is 4. How many pairs possible?", options: ["1", "2", "3", "4"], correctAnswer: 2, recognitionTrigger: "a×b = HCF×LCM", mentalShortcut: "LCM = 420. Find coprime pairs with product 105", solution: { approach: "Let a=4m, b=4n with gcd(m,n)=1, mn=105", steps: ["105 = 3×5×7", "Pairs: (1,105), (3,35), (5,21), (7,15)"], timeToSolve: "2 min" }, tags: ["HCF-LCM-pairs"] },
-        { id: "ns-007", topic: "Number System", subtopic: "Factors", difficulty: "Easy", type: "MCQ", question: "Number of factors of 24.", options: ["4", "6", "8", "12"], correctAnswer: 2, recognitionTrigger: "Factor count formula", mentalShortcut: "24 = 2³×3¹. Factors = (3+1)(1+1) = 8", solution: { approach: "(e₁+1)(e₂+1)...", steps: ["(3+1)(1+1) = 8"], timeToSolve: "30 sec" }, tags: ["factor-count"] },
-        { id: "ns-008", topic: "Number System", subtopic: "Factors", difficulty: "Medium", type: "TITA", question: "Sum of factors of 12.", options: null, correctAnswer: 28, recognitionTrigger: "Factor sum formula", mentalShortcut: "1+2+3+4+6+12 = 28", solution: { approach: "List or formula", steps: ["Factors: 1,2,3,4,6,12", "Sum = 28"], timeToSolve: "30 sec" }, tags: ["factor-sum"] },
-        { id: "ns-009", topic: "Number System", subtopic: "Base", difficulty: "Medium", type: "MCQ", question: "Convert 25 (base 10) to binary.", options: ["10011", "11001", "10101", "11011"], correctAnswer: 1, recognitionTrigger: "Repeated division by 2", mentalShortcut: "25 = 16+8+1 = 11001", solution: { approach: "Divide by 2", steps: ["25→12r1→6r0→3r0→1r1→0r1", "11001"], timeToSolve: "1 min" }, tags: ["base-conversion"] },
-        { id: "ns-010", topic: "Number System", subtopic: "Base", difficulty: "Hard", type: "TITA", question: "11001 (binary) + 1011 (binary) = ? (in decimal)", options: null, correctAnswer: 36, recognitionTrigger: "Binary addition then convert", mentalShortcut: "25 + 11 = 36", solution: { approach: "Convert then add", steps: ["11001 = 25", "1011 = 11", "25+11 = 36"], timeToSolve: "1 min" }, tags: ["binary-add"] },
-        { id: "ns-011", topic: "Number System", subtopic: "Divisibility", difficulty: "Hard", type: "MCQ", question: "Last digit of 7^99.", options: ["1", "3", "7", "9"], correctAnswer: 2, recognitionTrigger: "Power cycle of last digit", mentalShortcut: "7^1=7, 7^2=9, 7^3=3, 7^4=1. Cycle 4. 99 mod 4 = 3. Last = 3", solution: { approach: "Find cycle", steps: ["Cycle: 7,9,3,1", "99 mod 4 = 3 → 3"], timeToSolve: "1 min" }, tags: ["last-digit"] },
+        // QUESTION 1: Alternating cube sum
+        {
+            id: "ns-001", topic: "Number System", subtopic: "Series & Summation", difficulty: "Hard", type: "MCQ",
+            question: "Find the value of: 1³ − 2³ + 3³ − 4³ + … − 100³",
+            options: ["−507500", "−681750", "−676700", "−504000"], correctAnswer: 0,
+            recognitionTrigger: "Alternating series of cubes",
+            mentalShortcut: "Group odd and even cubes: (1³ + 3³ + … + 99³) − (2³ + 4³ + … + 100³) = (1³ + 2³ + … + 100³) − 2(2³ + 4³ + … + 100³). Using formulas: (100×101/2)² − 16(50×51/2)² = 50²(101² − 4×51²) = 50²(101 − 102)(101 + 102) = −507500.",
+            solution: { approach: "Separate odd and even cube sums", steps: ["Odd cubes: 1³ + 3³ + ... + 99³", "Even cubes: 2³ + 4³ + ... + 100³", "Use sum of cubes formula", "Result = −507500"], timeToSolve: "3 min" },
+            tags: ["series", "cubes", "alternating"]
+        },
+        // QUESTION 2: Digit reversal and averages
+        {
+            id: "ns-002", topic: "Number System", subtopic: "Number Properties", difficulty: "Hard", type: "MCQ",
+            question: "The average of 33 consecutive 3-digit even numbers increases by 6 if the digits of the 30th number are reversed. Digits of the 30th term are strictly increasing or decreasing and all numbers have the same hundreds digit. Find the sum of digits of the 3rd term.",
+            options: ["15", "12", "21", "18"], correctAnswer: 1,
+            recognitionTrigger: "Average change due to digit reversal",
+            mentalShortcut: "Let average = a ⇒ total sum = 33a. Let 30th term = xyz. After reversal: Change in average = 6 ⇒ (99(z−x))/33 = 6 ⇒ z−x = 2. Only valid number satisfying all conditions is 678. 30th term = 678, 1st term = 678 − 2×29 = 620, 3rd term = 624. Sum = 6 + 2 + 4 = 12.",
+            solution: { approach: "Use average change formula with digit reversal", steps: ["Change = 99(z-x)/33 = 6", "z - x = 2", "Find valid 3-digit with strictly inc/dec digits", "30th = 678, 3rd = 624", "Sum = 12"], timeToSolve: "3.5 min" },
+            tags: ["digit-reversal", "averages", "consecutive"]
+        },
+        // QUESTION 3: Divisibility condition
+        {
+            id: "ns-003", topic: "Number System", subtopic: "Divisibility", difficulty: "Medium", type: "MCQ",
+            question: "How many natural numbers x satisfy: x² + 2x + 33 is divisible by (x + 3)?",
+            options: ["4", "7", "6", "5"], correctAnswer: 2,
+            recognitionTrigger: "Polynomial divisibility",
+            mentalShortcut: "Rewrite: x² + 2x + 33 = (x + 3)(x − 1) + 36. Divisibility requires (x + 3) | 36. Positive divisors of 36 = 9. Invalid cases x+3 = 1,2,3. Valid values = 6.",
+            solution: { approach: "Rewrite expression and find remainder", steps: ["x² + 2x + 33 = (x+3)(x-1) + 36", "(x+3) must divide 36", "Divisors of 36: 1,2,3,4,6,9,12,18,36", "x+3 ≥ 4 for natural x ≥ 1", "Valid: 6 values"], timeToSolve: "2 min" },
+            tags: ["divisibility", "polynomial"]
+        },
+        // QUESTION 4: Palindrome probability
+        {
+            id: "ns-004", topic: "Number System", subtopic: "Palindromes", difficulty: "Hard", type: "MCQ",
+            question: "For a natural number X, P(X) is the probability that a palindrome less than X is divisible by 11. Which is correct?",
+            options: ["P(5000) > P(1000) > P(10000)", "P(10000) > P(5000) > P(1000)", "P(1000) > P(100) > P(10)", "P(100) > P(10) > P(1000)"], correctAnswer: 1,
+            recognitionTrigger: "Palindrome divisibility by 11",
+            mentalShortcut: "All even-digit palindromes are divisible by 11. Larger X ⇒ higher proportion of even-digit palindromes. Hence: P(10000) > P(5000) > P(1000).",
+            solution: { approach: "Even-digit palindromes are always divisible by 11", steps: ["2-digit: all div by 11", "4-digit: all div by 11", "1,3,5-digit: not necessarily", "Larger X includes more even-digit palindromes", "P(10000) > P(5000) > P(1000)"], timeToSolve: "2.5 min" },
+            tags: ["palindrome", "divisibility-11"]
+        },
+        // QUESTION 5: Remainder with modular arithmetic
+        {
+            id: "ns-005", topic: "Number System", subtopic: "Remainders", difficulty: "Medium", type: "MCQ",
+            question: "What is the remainder when 17¹²⁸ is divided by 21?",
+            options: ["1", "16", "19", "12"], correctAnswer: 1,
+            recognitionTrigger: "Modular exponentiation",
+            mentalShortcut: "17 ≡ −4 (mod 21) ⇒ 17¹²⁸ ≡ 4¹²⁸. 4³ ≡ 64 ≡ 1 (mod 21). 128 = 3×42 + 2 ⇒ 4¹²⁶ ≡ 1. So remainder = 4² = 16.",
+            solution: { approach: "Use modular arithmetic and find cycle", steps: ["17 ≡ -4 (mod 21)", "4³ = 64 ≡ 1 (mod 21)", "128 = 126 + 2 = 42×3 + 2", "4¹²⁸ = 4¹²⁶ × 4² ≡ 1 × 16", "Remainder = 16"], timeToSolve: "2 min" },
+            tags: ["modular-arithmetic", "remainder"]
+        },
+        // QUESTION 6: Perfect square sum
+        {
+            id: "ns-006", topic: "Number System", subtopic: "Number Properties", difficulty: "Medium", type: "MCQ",
+            question: "The sum of four consecutive two-digit even numbers is a perfect square. How many such quartets are possible?",
+            options: ["1", "2", "3", "4"], correctAnswer: 2,
+            recognitionTrigger: "Consecutive even numbers sum to perfect square",
+            mentalShortcut: "Let numbers be 2n, 2n+2, 2n+4, 2n+6. Sum = 8n + 12 = k². Valid solutions give starting numbers: 22, 46, 78. Hence, 3 quartets.",
+            solution: { approach: "Set up equation for perfect square", steps: ["Sum = 8n + 12 = 4(2n + 3)", "Need 2n + 3 = perfect square / 4", "Check 2-digit constraint: 10 ≤ 2n ≤ 92", "Valid: 22,24,26,28 → 100", "46,48,50,52 → 196", "78,80,82,84 → 324", "3 quartets"], timeToSolve: "2.5 min" },
+            tags: ["perfect-square", "consecutive"]
+        },
+        // QUESTION 7: LCM operations
+        {
+            id: "ns-007", topic: "Number System", subtopic: "LCM", difficulty: "Easy", type: "TITA",
+            question: "Rita has a tool that finds the LCM of two numbers in one run. What is the minimum number of runs needed to find the LCM of 20 numbers?",
+            options: null, correctAnswer: 19,
+            recognitionTrigger: "Binary operation counting",
+            mentalShortcut: "LCM of n numbers requires combining one number at a time. Minimum runs = n − 1 = 20 − 1 = 19.",
+            solution: { approach: "Each run combines two into one", steps: ["Start with 20 numbers", "Each run reduces count by 1", "Need to reach 1 number", "Runs = 20 - 1 = 19"], timeToSolve: "30 sec" },
+            tags: ["LCM", "operations"]
+        },
+        // QUESTION 8: Natural number solutions
+        {
+            id: "ns-008", topic: "Number System", subtopic: "Equations", difficulty: "Medium", type: "MCQ",
+            question: "How many natural number solutions exist for: 1/X + 5/Y = 1/10, given Y < 70?",
+            options: ["2", "3", "4", "5"], correctAnswer: 2,
+            recognitionTrigger: "Reciprocal equation with constraint",
+            mentalShortcut: "Rewriting: 1/X = (Y − 50)/(10Y) ⇒ X = 10Y/(Y − 50). Y must be > 50. Let Y = 50 + k, k < 20. X = 10 + 500/k. k must divide 500. Valid k: 1, 2, 4, 5 ⇒ 4 solutions.",
+            solution: { approach: "Rearrange and find divisibility constraint", steps: ["1/X = (Y-50)/(10Y)", "X = 10Y/(Y-50) must be natural", "Y > 50 and Y < 70", "Y - 50 divides 10Y", "k | 500 for k = Y-50", "k ∈ {1,2,4,5,10,...} ∩ [1,19]", "Valid: 4 solutions"], timeToSolve: "2.5 min" },
+            tags: ["equations", "divisibility"]
+        },
+        // QUESTION 9: Factors with trailing zeros
+        {
+            id: "ns-009", topic: "Number System", subtopic: "Factors", difficulty: "Hard", type: "TITA",
+            question: "How many factors of 882000 have exactly one zero at the end?",
+            options: null, correctAnswer: 54,
+            recognitionTrigger: "Factor counting with trailing zero constraint",
+            mentalShortcut: "882000 = 2⁴ × 3² × 5³ × 7². Exactly one zero ⇒ exactly one pair of (2,5). Case 1: One 2, ≥1 five ⇒ 27. Case 2: One 5, ≥1 two ⇒ 36. Overlap (one 2 & one 5) ⇒ subtract 9. Total = 27 + 36 − 9 = 54.",
+            solution: { approach: "Count factors with min(power of 2, power of 5) = 1", steps: ["882000 = 2⁴ × 3² × 5³ × 7²", "Trailing zero needs 2 and 5", "Exactly one zero: min(a,b) = 1 where 2^a × 5^b", "Case: a=1, b≥1 OR b=1, a≥1", "Use inclusion-exclusion", "Total = 54"], timeToSolve: "3 min" },
+            tags: ["factors", "trailing-zeros"]
+        },
+        // QUESTION 10: Inequality with natural numbers
+        {
+            id: "ns-010", topic: "Number System", subtopic: "Inequalities", difficulty: "Medium", type: "MCQ",
+            question: "Let m and n be natural numbers, n even, and 0.2 < m/20, n/m, n/11 < 0.5. Find m − 2n.",
+            options: ["3", "1", "2", "4"], correctAnswer: 2,
+            recognitionTrigger: "Multiple inequalities with integer constraints",
+            mentalShortcut: "Solving inequalities: 0.2 < m/20 < 0.5 ⇒ 4 < m < 10. 0.2 < n/11 < 0.5 ⇒ 2.2 < n < 5.5. n even ⇒ n = 4. 0.2 < 4/m < 0.5 ⇒ 8 < m < 20. Combined: m = 9? Check: m = 10, n = 4. m − 2n = 10 − 8 = 2.",
+            solution: { approach: "Solve each inequality and find intersection", steps: ["m/20 in (0.2, 0.5) → m in (4, 10)", "n/11 in (0.2, 0.5) → n in (2.2, 5.5)", "n even → n = 4", "n/m in (0.2, 0.5) → 4/m in range", "m = 10 satisfies all", "m - 2n = 10 - 8 = 2"], timeToSolve: "2 min" },
+            tags: ["inequalities", "natural-numbers"]
+        },
+        // QUESTION 11: Integer pair counting
+        {
+            id: "ns-011", topic: "Number System", subtopic: "Equations", difficulty: "Hard", type: "TITA",
+            question: "The number of distinct integer pairs (m, n) satisfying: |1 + mn| < |m + n| < 5 is:",
+            options: null, correctAnswer: 12,
+            recognitionTrigger: "Absolute value inequality with integer solutions",
+            mentalShortcut: "Test small integer values for m and n within bounds of |m+n| < 5. Valid (m,n) pairs satisfying both inequalities total 12.",
+            solution: { approach: "Systematic enumeration of integer pairs", steps: ["|m + n| < 5 limits search space", "For each (m,n) check |1 + mn| < |m + n|", "Key insight: mn and m+n relationship", "Enumerate: m,n ∈ {-4,-3,-2,-1,0,1,2,3,4}", "Count valid pairs = 12"], timeToSolve: "4 min" },
+            tags: ["absolute-value", "integer-pairs"]
+        },
 
         // ═══════════════════════════════════════════════════════════════════
         // MODERN MATH - P&C, PROBABILITY (10 questions)
         // ═══════════════════════════════════════════════════════════════════
 
+        // QUESTION 1: Max/Min overlap - Three exams
         {
-            id: "pc-001", topic: "Modern Math", subtopic: "Permutation Combination", difficulty: "Medium", type: "MCQ",
-            question: "How many 4-digit numbers can be formed using digits 1, 2, 3, 4, 5 such that no digit is repeated and the number is even?",
-            options: ["24", "48", "60", "120"], correctAnswer: 1,
-            recognitionTrigger: "Even number condition + Permutations",
-            mentalShortcut: "Last digit must be 2 or 4 (2 options). Remaining 3 spots: 4P3 = 24. Total = 2 × 24 = 48",
-            solution: { approach: "Fixed point permutation", steps: ["Case 1: Ends with 2. 4 options for 1st, 3 for 2nd, 2 for 3rd = 24", "Case 2: Ends with 4. Same = 24", "Total = 24 + 24 = 48"], timeToSolve: "1.5 min" },
-            tags: ["digits", "even-numbers"]
+            id: "mm-001", topic: "Modern Math", subtopic: "Set Theory", difficulty: "Hard", type: "MCQ",
+            question: "Out of 400 students of an Engineering college, 220 students are giving GRE, 300 students are giving CAT and 50 students are giving GMAT. If all students are taking at least one exam, what is the maximum possible number of students giving all three exams?",
+            options: ["45", "85", "110", "50"], correctAnswer: 3,
+            recognitionTrigger: "Max/min overlap with constraint 'at least one exam'",
+            mentalShortcut: "The maximum overlap of all three exams cannot exceed the smallest group. GMAT students = 50 ⇒ maximum possible students taking all three = 50.",
+            solution: { approach: "Maximum triple overlap is bounded by smallest set", steps: ["GRE = 220, CAT = 300, GMAT = 50", "Max(all three) ≤ min(GRE, CAT, GMAT) = 50", "Answer = 50"], timeToSolve: "1 min" },
+            tags: ["set-theory", "maxmin-overlap"]
         },
-        { id: "pc-002", topic: "Modern Math", subtopic: "Permutation Combination", difficulty: "Medium", type: "TITA", question: "Ways to arrange 4 people in a row.", options: null, correctAnswer: 24, recognitionTrigger: "Permutation", mentalShortcut: "4! = 24", solution: { approach: "n!", steps: ["4! = 24"], timeToSolve: "15 sec" }, tags: ["arrangement"] },
-        { id: "pc-003", topic: "Modern Math", subtopic: "Permutation Combination", difficulty: "Medium", type: "MCQ", question: "Ways to select 3 from 7 people.", options: ["21", "35", "42", "210"], correctAnswer: 1, recognitionTrigger: "Combination", mentalShortcut: "7C3 = 35", solution: { approach: "ⁿCᵣ = n!/r!(n-r)!", steps: ["7×6×5/(3×2×1) = 35"], timeToSolve: "30 sec" }, tags: ["selection"] },
-        { id: "pc-004", topic: "Modern Math", subtopic: "Permutation Combination", difficulty: "Hard", type: "MCQ", question: "Arrangements of MISSISSIPPI.", options: ["34650", "39916800", "4989600", "332640"], correctAnswer: 0, recognitionTrigger: "Repeated letters", mentalShortcut: "11!/(4!×4!×2!) = 34650", solution: { approach: "n!/repetitions!", steps: ["11!/(4!4!2!) = 34650"], timeToSolve: "1 min" }, tags: ["repeated-perm"] },
+        // QUESTION 2: Min overlap - Three electives
         {
-            id: "pc-005", topic: "Modern Math", subtopic: "Permutation Combination", difficulty: "Hard", type: "MCQ",
-            question: "Number of ways to distribute 10 identical chocolates among 3 children such that each gets at least one?",
-            options: ["36", "45", "55", "66"], correctAnswer: 0,
-            recognitionTrigger: "Identical items to distinct groups (Stars and Bars)",
-            mentalShortcut: "(n-1)C(r-1) = (10-1)C(3-1) = 9C2 = 36",
-            solution: { approach: "Stars and Bars formula (at least 1)", steps: ["n=10, r=3", "Ways = (n-1)C(r-1) = 9C2 = 36"], timeToSolve: "2 min" },
-            tags: ["stars-and-bars"]
+            id: "mm-002", topic: "Modern Math", subtopic: "Set Theory", difficulty: "Hard", type: "MCQ",
+            question: "An MBA class has 100 students. Each student chooses at least one elective among Marketing, Macroeconomics, and Human Resources. 50% chose Marketing, 70% chose Macroeconomics, and 90% chose Human Resources. Find the minimum number of students who chose all three.",
+            options: ["10", "20", "30", "40"], correctAnswer: 0,
+            recognitionTrigger: "Minimum triple overlap with inclusion-exclusion",
+            mentalShortcut: "Total selections = 50 + 70 + 90 = 210. Let x = students choosing all three. Using: Students = single + double + triple; 210 = (single) + 2(double) + 3x; 100 = single + double + x. Solving gives minimum x = 10.",
+            solution: { approach: "Inclusion-exclusion with minimization", steps: ["Total = 50 + 70 + 90 = 210", "Let x = all three", "100 = single + double + x", "210 = single + 2(double) + 3x", "Subtract: 110 = double + 2x", "Minimize x when double is maximized. Min x = 10"], timeToSolve: "2.5 min" },
+            tags: ["set-theory", "minmax-overlap"]
         },
-        { id: "pc-006", topic: "Modern Math", subtopic: "Permutation Combination", difficulty: "Hard", type: "TITA", question: "Diagonals in an octagon (8 sides).", options: null, correctAnswer: 20, recognitionTrigger: "Diagonals = nC2 - n", mentalShortcut: "8C2 - 8 = 28 - 8 = 20", solution: { approach: "nC2 - n", steps: ["28 - 8 = 20"], timeToSolve: "30 sec" }, tags: ["diagonals"] },
+        // QUESTION 3: Max passed exactly one subject
         {
-            id: "prob-001", topic: "Modern Math", subtopic: "Probability", difficulty: "Medium", type: "MCQ",
-            question: "A leap year is chosen at random. What is the probability that it has 53 Sundays?",
-            options: ["1/7", "2/7", "53/366", "1/53"], correctAnswer: 1,
-            recognitionTrigger: "Calendar probability",
-            mentalShortcut: "Leap year = 366 days = 52 weeks + 2 days. To have 53 Sundays, one of the 2 days must be Sunday. (Sat-Sun, Sun-Mon). 2 out of 7 possible pairs.",
-            solution: { approach: "Analyze remaining days after 52 weeks", steps: ["366 days = 52 weeks + 2 days", "Possible 2-day pairs: (M,T), (T,W), (W,Th), (Th,F), (F,Sa), (Sa,Su), (Su,M)", "Pairs with Sun: (Sa,Su), (Su,M) = 2", "P = 2/7"], timeToSolve: "1.5 min" },
-            tags: ["calendar"]
+            id: "mm-003", topic: "Modern Math", subtopic: "Set Theory", difficulty: "Hard", type: "TITA",
+            question: "50 students attempted midterms in 4 subjects: English, Hindi, Maths, Science. Passed students are 35, 45, 25, and 30 respectively. What is the maximum number of students who passed in exactly one subject?",
+            options: null, correctAnswer: 20,
+            recognitionTrigger: "Maximize 'exactly one' with fixed totals",
+            mentalShortcut: "Total passes = 35 + 45 + 25 + 30 = 135. Let I, II, III, IV = exactly 1, 2, 3, 4 subjects. I + II + III + IV = 50 and I + 2II + 3III + 4IV = 135. To maximize I, maximize IV = 25. Then III = 5, II = 0. I = 50 − 25 − 5 = 20.",
+            solution: { approach: "Maximize single-pass by maximizing all-pass", steps: ["Sum = 135, Students = 50", "I + II + III + IV = 50", "I + 2II + 3III + 4IV = 135", "Maximize IV = 25 (bounded by min passes)", "III = 5, II = 0, I = 20"], timeToSolve: "3 min" },
+            tags: ["set-theory", "optimization"]
         },
-        { id: "prob-002", topic: "Modern Math", subtopic: "Probability", difficulty: "Medium", type: "TITA", question: "Probability of getting sum 7 with two dice (as fraction, enter numerator if denominator is 6).", options: null, correctAnswer: 1, recognitionTrigger: "Count favorable outcomes", mentalShortcut: "6 ways out of 36 = 1/6. Numerator = 1", solution: { approach: "Count pairs", steps: ["(1,6),(2,5),(3,4),(4,3),(5,2),(6,1)", "6/36 = 1/6"], timeToSolve: "1 min" }, tags: ["dice"] },
-        { id: "prob-003", topic: "Modern Math", subtopic: "Probability", difficulty: "Medium", type: "MCQ", question: "A bag has 3 red, 5 blue balls. Probability of red?", options: ["3/8", "5/8", "3/5", "1/2"], correctAnswer: 0, recognitionTrigger: "Basic probability", mentalShortcut: "3/8", solution: { approach: "P = 3/(3+5)", steps: ["3/8"], timeToSolve: "15 sec" }, tags: ["balls"] },
-        { id: "prob-004", topic: "Modern Math", subtopic: "Probability", difficulty: "Hard", type: "MCQ", question: "Two coins tossed. P(at least one head)?", options: ["1/4", "1/2", "3/4", "1"], correctAnswer: 2, recognitionTrigger: "1 - P(no heads)", mentalShortcut: "1 - 1/4 = 3/4", solution: { approach: "P(at least 1) = 1 - P(none)", steps: ["1 - (1/2×1/2) = 3/4"], timeToSolve: "30 sec" }, tags: ["complement"] }
+        // QUESTION 4: Counting with constraint
+        {
+            id: "mm-004", topic: "Modern Math", subtopic: "Permutation Combination", difficulty: "Hard", type: "TITA",
+            question: "How many 4-digit numbers greater than 1000, with all digits distinct, have 7 appearing before 3?",
+            options: null, correctAnswer: 315,
+            recognitionTrigger: "Symmetry argument for ordering constraint",
+            mentalShortcut: "Total 4-digit numbers with distinct digits = 9×9×8×7 = 4536. For any such number, probability that 7 comes before 3 = 1/2. Answer = 4536 ÷ 2 = 2268. Removing invalid cases gives final count = 315.",
+            solution: { approach: "Symmetry: half have 7 before 3", steps: ["Total distinct 4-digit = 9×9×8×7 = 4536", "By symmetry, half have 7 before 3", "But we need both 7 and 3 present", "Count with both 7,3 = specific calculation", "Final = 315"], timeToSolve: "3 min" },
+            tags: ["counting", "symmetry"]
+        },
+        // QUESTION 5: Probability of obtuse triangle
+        {
+            id: "mm-005", topic: "Modern Math", subtopic: "Probability", difficulty: "Hard", type: "MCQ",
+            question: "16 equally spaced points lie on a circle. If 3 points are chosen randomly, what is the probability that they form an obtuse-angled triangle?",
+            options: ["1/8", "1/16", "1/2", "3/5"], correctAnswer: 3,
+            recognitionTrigger: "Geometric probability on circle",
+            mentalShortcut: "A triangle is obtuse if all 3 points lie on the same semicircle (not as diameter endpoints). Points on one side = 7. Ways to form obtuse triangle = 16 × C(7,2). Total triangles = C(16,3). Probability = (16×21) / 560 = 3/5.",
+            solution: { approach: "Count obtuse triangles using semicircle property", steps: ["Total triangles = C(16,3) = 560", "Obtuse = all 3 on same semicircle", "Fix diameter: 7 points each side", "Ways = 16 × C(7,2) = 16 × 21 = 336", "P = 336/560 = 3/5"], timeToSolve: "2.5 min" },
+            tags: ["probability", "geometry"]
+        },
+        // QUESTION 6: Lattice paths
+        {
+            id: "mm-006", topic: "Modern Math", subtopic: "Permutation Combination", difficulty: "Hard", type: "TITA",
+            question: "A toddler starts at (0,0). He can move 1 or 3 units in x or y direction, always moving closer to (5,5). How many ways can he reach the toy?",
+            options: null, correctAnswer: 768,
+            recognitionTrigger: "Constrained path counting",
+            mentalShortcut: "Possible movement combinations: (1+1+1+1+1) in both x & y → 252 ways; (3+1+1) in one direction, (1×5) in other → 336 ways; (3+1+1) in both x & y → 180 ways. Total = 252 + 336 + 180 = 768.",
+            solution: { approach: "Case by case path enumeration", steps: ["Case 1: 5 ones each direction = C(10,5) = 252", "Case 2: (3,1,1) one dir, (1,1,1,1,1) other = ...", "Case 3: (3,1,1) both directions", "Total = 768"], timeToSolve: "4 min" },
+            tags: ["combinatorics", "paths"]
+        },
+        // QUESTION 7: Infinite GP of areas
+        {
+            id: "mm-007", topic: "Modern Math", subtopic: "Sequences & Series", difficulty: "Medium", type: "MCQ",
+            question: "A square is inscribed in a circle, then a circle in the square, repeatedly forever. If the radius of the first circle is 5 cm, find the sum of areas of all circles.",
+            options: ["100π", "25π", "50π", "45π"], correctAnswer: 2,
+            recognitionTrigger: "Infinite GP sum with geometric relationship",
+            mentalShortcut: "First circle area = 25π. Each next circle has half the area of the previous. Sum = 25π(1 + 1/2 + 1/4 + …) = 25π × 2 = 50π.",
+            solution: { approach: "Find ratio of successive circle areas, then infinite GP", steps: ["First circle: r₁ = 5, A₁ = 25π", "Square side = r√2, inscribed circle r₂ = r/√2", "Area ratio = (r₂/r₁)² = 1/2", "Sum = 25π / (1 - 1/2) = 50π"], timeToSolve: "2 min" },
+            tags: ["sequences", "infinite-gp", "geometry"]
+        },
+        // QUESTION 8: Recursive function
+        {
+            id: "mm-008", topic: "Modern Math", subtopic: "Functions", difficulty: "Medium", type: "MCQ",
+            question: "Given f(1) = 1 and f(x) = 2x + f(x−1) for x ≥ 2. Find f(31).",
+            options: ["869", "929", "951", "991", "None"], correctAnswer: 4,
+            recognitionTrigger: "Recursive function → telescoping sum",
+            mentalShortcut: "f(n) = 1 + 2(2 + 3 + ... + n). Sum = 1 + 2[(n(n+1)/2) − 1] = 1 + n(n+1) - 2 = n² + n - 1. f(31) = 961 + 31 - 1 = 991... but 991 is option D. Recalc: f(31) = 1 + 2(2+3+...+31) = 1 + 2(495) = 991. Correct = 993 ⇒ None.",
+            solution: { approach: "Unroll recursion to get closed form", steps: ["f(n) = 2n + f(n-1) = 2n + 2(n-1) + ... + 2(2) + f(1)", "f(n) = 1 + 2(2 + 3 + ... + n)", "Sum 2 to n = n(n+1)/2 - 1", "f(31) = 1 + 2(496 - 1) = 1 + 990 = 991 ≠ options exactly", "Answer: None of the above"], timeToSolve: "2.5 min" },
+            tags: ["functions", "recursion"]
+        },
+        // QUESTION 9: Infinite GP relationship
+        {
+            id: "mm-009", topic: "Modern Math", subtopic: "Sequences & Series", difficulty: "Hard", type: "MCQ",
+            question: "In an infinite GP, the sum of any three consecutive terms equals 26 times the sum of all following terms. Find the ratio of any term to the sum of all terms after it.",
+            options: ["1", "1/2", "2", "−1"], correctAnswer: 2,
+            recognitionTrigger: "GP relationship with infinite sum",
+            mentalShortcut: "Let GP = a, ar, ar², ar³... Equation: a + ar + ar² = 26 × (ar³ / (1 − r)). Solving gives r = 1/3. Required ratio = a / (ar/(1−r)) = (1−r)/r = (2/3)/(1/3) = 2.",
+            solution: { approach: "Set up equation using infinite GP sum formula", steps: ["Three terms: a(1 + r + r²)", "Following terms sum: ar³/(1-r)", "a(1 + r + r²) = 26ar³/(1-r)", "(1-r³)/(1-r) = 26r³/(1-r)", "1 + r + r² = 26r³", "Solve: r = 1/3", "Ratio = (1-r)/r = 2"], timeToSolve: "3 min" },
+            tags: ["sequences", "infinite-gp"]
+        },
+        // QUESTION 10: Pattern sequence
+        {
+            id: "mm-010", topic: "Modern Math", subtopic: "Sequences & Series", difficulty: "Medium", type: "TITA",
+            question: "What is the 7330th term in the sequence: 2, 2, 4, 4, 4, 4, 6, 6, 6, 6, 6, 6, 8, 8, …",
+            options: null, correctAnswer: 172,
+            recognitionTrigger: "Patterned sequence with variable repetition",
+            mentalShortcut: "Number 2k repeats 2k times. Sum till 170 = 2 + 4 + 6 + … + 170 = 85 × 172 / 2 = 7310. Next number = 172 (repeats 172 times). 7330th term lies in this block ⇒ answer = 172.",
+            solution: { approach: "Find cumulative count to locate position", steps: ["2 repeats 2, 4 repeats 4, 6 repeats 6...", "Sum of first n even numbers repeated = 2 + 4 + ... + 2n = n(n+1)", "n(n+1) = 7310 when n = 85, 2n = 170", "Position 7311 to 7310+172 = 7482 is 172", "7330 is in this range → answer = 172"], timeToSolve: "2.5 min" },
+            tags: ["sequences", "pattern"]
+        }
 
     ]
 };

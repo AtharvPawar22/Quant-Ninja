@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import coreStructures from '../data/coreStructures';
 import {
     getProgress,
@@ -8,6 +8,8 @@ import {
     isBookmarked,
     getStats
 } from '../services/progressService';
+import { isAuthenticated } from '../services/authService';
+import AuthModal from '../components/AuthModal';
 import './Course.css';
 import './NotesQuiz.css'; // Reuse CAT UI styles
 
@@ -15,22 +17,29 @@ import './NotesQuiz.css'; // Reuse CAT UI styles
 const DEV_EMAILS = ['xyz111@email.com', 'admin@quantninja.com'];
 
 const TOPICS = [
-    { id: 'arithmetic', name: 'Arithmetic', icon: '🔢', count: 65 },
-    { id: 'algebra', name: 'Algebra', icon: '📈', count: 42 },
-    { id: 'geometry', name: 'Geometry', icon: '📐', count: 22 },
-    { id: 'numberSystem', name: 'Number System', icon: '🔢', count: 11 },
-    { id: 'modernMath', name: 'Modern Math', icon: '🎲', count: 10 }
+    { id: 'arithmetic', name: 'Arithmetic', icon: '', count: 65 },
+    { id: 'algebra', name: 'Algebra', icon: '', count: 42 },
+    { id: 'geometry', name: 'Geometry', icon: '', count: 22 },
+    { id: 'numberSystem', name: 'Number System', icon: '', count: 11 },
+    { id: 'modernMath', name: 'Modern Math', icon: '', count: 10 }
 ];
 
 export default function Course() {
+    const navigate = useNavigate();
+
     // Access Control
     const [showModal, setShowModal] = useState(false);
     const [email, setEmail] = useState('');
     const [submitted, setSubmitted] = useState(false);
     const [hasAccess, setHasAccess] = useState(false);
 
-    // Stage Management
+    // Auth Modal State
+    const [showAuthModal, setShowAuthModal] = useState(false);
+    const [pendingAction, setPendingAction] = useState(null);
+
+    // Stage Management & Navigation History
     const [stage, setStage] = useState('browse'); // browse, preview, quiz, result
+    const [selectedTopic, setSelectedTopic] = useState(null); // Track which topic was selected
 
     // Filter State
     const [filters, setFilters] = useState({
@@ -50,7 +59,17 @@ export default function Course() {
     const [timeLeft, setTimeLeft] = useState(0);
     const [isTimed, setIsTimed] = useState(true);
     const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
+    const [showExitConfirm, setShowExitConfirm] = useState(false);
     const [showNinjaHint, setShowNinjaHint] = useState({});
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+    // Calculator State
+    const [showCalculator, setShowCalculator] = useState(false);
+    const [calcDisplay, setCalcDisplay] = useState('0');
+    const [calcMemory, setCalcMemory] = useState(0);
+    const [calcPrevValue, setCalcPrevValue] = useState(null);
+    const [calcOperator, setCalcOperator] = useState(null);
+    const [calcNewNumber, setCalcNewNumber] = useState(true);
 
     // Progress State
     const [progress, setProgress] = useState(getProgress());
@@ -95,6 +114,28 @@ export default function Course() {
         };
     }, [stage]);
 
+    // Keyboard Navigation
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (stage !== 'quiz') return;
+            if (showSubmitConfirm || showExitConfirm) return; // Don't navigate if modal open
+
+            if (e.key === 'ArrowLeft' && currentQ > 0) {
+                e.preventDefault();
+                goToQuestion(currentQ - 1);
+            } else if (e.key === 'ArrowRight' && currentQ < selectedQuestions.length - 1) {
+                e.preventDefault();
+                goToQuestion(currentQ + 1);
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                setShowExitConfirm(true);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [stage, currentQ, selectedQuestions.length, showSubmitConfirm, showExitConfirm]);
+
     // Handle Access
     const handleAccessSubmit = (e) => {
         e.preventDefault();
@@ -123,15 +164,51 @@ export default function Course() {
     };
 
     // Navigation
-    const startPractice = (qs) => {
+    const startPractice = (qs, topicName = null) => {
+        // Check if user is authenticated before starting practice
+        if (!isAuthenticated()) {
+            setPendingAction(() => () => startPracticeInternal(qs, topicName));
+            setShowAuthModal(true);
+            return;
+        }
+        startPracticeInternal(qs, topicName);
+    };
+
+    const startPracticeInternal = (qs, topicName) => {
         setSelectedQuestions(qs);
+        setSelectedTopic(topicName);
         setCurrentQ(0);
         setAnswers({});
         setTitaInputs({});
         setMarkedForReview(new Set());
         setVisitedQuestions(new Set([0]));
         setTimeLeft(qs.length * 120); // 2 mins per question
-        setStage('preview');
+        setIsTimed(true); // Default to timed
+        setStage('preview'); // Show ready screen
+    };
+
+    // Handle auth success - resume pending action
+    const handleAuthSuccess = () => {
+        if (pendingAction) {
+            pendingAction();
+            setPendingAction(null);
+        }
+    };
+
+    // Hierarchical back navigation
+    const handleBack = () => {
+        switch (stage) {
+            case 'preview':
+                setStage('browse');
+                setSelectedTopic(null);
+                break;
+            case 'result':
+                setStage('browse');
+                setSelectedTopic(null);
+                break;
+            default:
+                navigate('/');
+        }
     };
 
     const enterQuiz = () => {
@@ -194,6 +271,121 @@ export default function Course() {
         setAnswers(newAnswers);
         setTitaInputs({ ...titaInputs, [currentQ]: '' });
     };
+
+    // Toggle mark for review (can mark AND unmark)
+    const toggleMarkForReview = (index = currentQ) => {
+        setMarkedForReview(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(index)) {
+                newSet.delete(index);
+            } else {
+                newSet.add(index);
+            }
+            return newSet;
+        });
+    };
+
+    // Exit quiz with confirmation
+    const handleExitQuiz = () => {
+        setShowExitConfirm(false);
+        setStage('browse');
+    };
+
+    // Get quiz statistics for modals
+    const getQuizStats = () => {
+        const answered = Object.keys(answers).length;
+        const marked = markedForReview.size;
+        const unanswered = selectedQuestions.length - answered;
+        return { answered, marked, unanswered, total: selectedQuestions.length };
+    };
+
+    // Calculator Functions
+    const calcInput = (digit) => {
+        if (calcNewNumber) {
+            setCalcDisplay(digit === '.' ? '0.' : digit);
+            setCalcNewNumber(false);
+        } else {
+            if (digit === '.' && calcDisplay.includes('.')) return;
+            if (calcDisplay === '0' && digit !== '.') {
+                setCalcDisplay(digit);
+            } else {
+                setCalcDisplay(calcDisplay + digit);
+            }
+        }
+    };
+
+    const calcOperation = (op) => {
+        const current = parseFloat(calcDisplay);
+        if (calcOperator && !calcNewNumber) {
+            const result = calculate(calcPrevValue, current, calcOperator);
+            setCalcDisplay(String(result));
+            setCalcPrevValue(result);
+        } else {
+            setCalcPrevValue(current);
+        }
+        setCalcOperator(op);
+        setCalcNewNumber(true);
+    };
+
+    const calculate = (a, b, op) => {
+        switch (op) {
+            case '+': return a + b;
+            case '-': return a - b;
+            case '*': return a * b;
+            case '/': return b !== 0 ? a / b : 'Error';
+            default: return b;
+        }
+    };
+
+    const calcEquals = () => {
+        if (!calcOperator) return;
+        const current = parseFloat(calcDisplay);
+        const result = calculate(calcPrevValue, current, calcOperator);
+        setCalcDisplay(String(result));
+        setCalcPrevValue(null);
+        setCalcOperator(null);
+        setCalcNewNumber(true);
+    };
+
+    const calcClear = () => {
+        setCalcDisplay('0');
+        setCalcPrevValue(null);
+        setCalcOperator(null);
+        setCalcNewNumber(true);
+    };
+
+    const calcBackspace = () => {
+        if (calcDisplay.length > 1) {
+            setCalcDisplay(calcDisplay.slice(0, -1));
+        } else {
+            setCalcDisplay('0');
+            setCalcNewNumber(true);
+        }
+    };
+
+    const calcToggleSign = () => {
+        setCalcDisplay(String(parseFloat(calcDisplay) * -1));
+    };
+
+    const calcPercent = () => {
+        setCalcDisplay(String(parseFloat(calcDisplay) / 100));
+    };
+
+    const calcInverse = () => {
+        const val = parseFloat(calcDisplay);
+        if (val !== 0) setCalcDisplay(String(1 / val));
+    };
+
+    const calcSqrt = () => {
+        const val = parseFloat(calcDisplay);
+        if (val >= 0) setCalcDisplay(String(Math.sqrt(val)));
+    };
+
+    const calcMemoryClear = () => setCalcMemory(0);
+    const calcMemoryRecall = () => { setCalcDisplay(String(calcMemory)); setCalcNewNumber(true); };
+    const calcMemoryStore = () => setCalcMemory(parseFloat(calcDisplay));
+    const calcMemoryAdd = () => setCalcMemory(calcMemory + parseFloat(calcDisplay));
+    const calcMemorySubtract = () => setCalcMemory(calcMemory - parseFloat(calcDisplay));
 
     // Render Helpers
     const renderBrowse = () => {
@@ -262,7 +454,7 @@ export default function Course() {
 
                         return (
                             <div key={topic.id} className="topic-section">
-                                <div className="topic-header" onClick={() => startPractice(topicQs)}>
+                                <div className="topic-header" onClick={() => startPractice(topicQs, topic.name)}>
                                     <div className="topic-title-group">
                                         <span className="topic-icon">{topic.icon}</span>
                                         <span className="topic-name">{topic.name}</span>
@@ -277,44 +469,80 @@ export default function Course() {
                     })}
                 </div>
 
-                <button className="btn-start-random" onClick={() => startPractice(filtered.slice(0, 10))}>
-                    <span>🚀 Start Mixed Practice (10 Qs)</span>
+                <button className="btn-start-random" onClick={() => startPractice(filtered.slice(0, 10), 'Mixed Practice')}>
+                    <span>Start Mixed Practice</span>
                 </button>
             </div>
         );
     };
 
-    const renderPreview = () => (
-        <div className="preview-container">
-            <h2>Practice Set Preview</h2>
-            <p>{selectedQuestions.length} questions selected based on your filters.</p>
+    const renderPreview = () => {
+        const totalMinutes = Math.ceil((selectedQuestions.length * 120) / 60);
+        const topicCounts = {};
+        selectedQuestions.forEach(q => {
+            topicCounts[q.topic] = (topicCounts[q.topic] || 0) + 1;
+        });
+        const mainTopic = Object.keys(topicCounts).sort((a, b) => topicCounts[b] - topicCounts[a])[0] || 'Mixed';
 
-            <div className="preview-list">
-                {selectedQuestions.map((q, i) => (
-                    <div key={q.id} className="preview-item">
-                        <span className="preview-q-text">{i + 1}. {q.question.slice(0, 100)}...</span>
-                        <span className={`tag ${q.difficulty.toLowerCase()}`}>{q.difficulty}</span>
+        return (
+            <div className="ready-screen">
+                <div className="ready-card">
+                    <div className="ready-brand-mark"></div>
+                    <h2 className="ready-title">Prepare for Session</h2>
+
+                    <div className="ready-stats">
+                        <div className="ready-stat">
+                            <span className="stat-value">{selectedQuestions.length}</span>
+                            <span className="stat-label">Questions</span>
+                        </div>
+                        <div className="ready-divider"></div>
+                        <div className="ready-stat">
+                            <span className="stat-value">{totalMinutes}</span>
+                            <span className="stat-label">Minutes</span>
+                        </div>
+                        <div className="ready-divider"></div>
+                        <div className="ready-stat">
+                            <span className="stat-value">{mainTopic}</span>
+                            <span className="stat-label">Topic</span>
+                        </div>
                     </div>
-                ))}
-            </div>
 
-            <div className="preview-actions">
-                <button className="btn btn-secondary" onClick={() => setStage('browse')}>Back</button>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    <button className={`btn ${!isTimed ? 'btn-primary' : 'btn-secondary'}`} onClick={() => setIsTimed(!isTimed)}>
-                        {isTimed ? '⏲️ Timed' : '♾️ Untimed'}
+                    <div className="timer-toggle">
+                        <button
+                            className={`toggle-btn ${isTimed ? 'active' : ''}`}
+                            onClick={() => setIsTimed(true)}
+                        >
+                            ⏱️ Timed
+                        </button>
+                        <button
+                            className={`toggle-btn ${!isTimed ? 'active' : ''}`}
+                            onClick={() => setIsTimed(false)}
+                        >
+                            ♾️ Untimed
+                        </button>
+                    </div>
+
+                    <button className="start-btn-big" onClick={enterQuiz}>
+                        Start Practice
+                        <span className="start-arrow">→</span>
                     </button>
-                    <button className="btn btn-primary" onClick={enterQuiz}>Start Practice</button>
+
+                    <button className="back-link-subtle" onClick={() => setStage('browse')}>
+                        ← Change Selection
+                    </button>
                 </div>
             </div>
-        </div>
-    );
+        );
+    };
 
     const renderQuiz = () => {
         const q = selectedQuestions[currentQ];
         if (!q) return null;
 
         const isTITA = q.type === 'TITA';
+        const stats = getQuizStats();
+        const isCurrentMarked = markedForReview.has(currentQ);
+
         const getStatus = (i) => {
             const hasAns = answers[i] !== undefined;
             const isMarked = markedForReview.has(i);
@@ -325,139 +553,267 @@ export default function Course() {
             return 'not-visited';
         };
 
+        const optionLabels = ['A', 'B', 'C', 'D', 'E', 'F'];
+
         return (
-            <div className="cat-quiz-container">
-                <div className="cat-header">
-                    <div className="cat-section-tabs">
-                        <button className="section-tab">Quant Ninja Bank</button>
+            <div className="cat-quiz-wrapper">
+                {/* Top Header */}
+                <header className="cat-top-header">
+                    <div className="header-section left">
+                        <span className="section-label">Section</span>
                     </div>
-                    {isTimed && (
-                        <div className="cat-timer">
-                            <span className="timer-label">Time Left:</span>
-                            <span className={`timer-value ${timeLeft < 60 ? 'warning' : ''}`}>
-                                {formatTime(timeLeft)}
-                            </span>
-                        </div>
-                    )}
-                </div>
-
-                <div className="cat-question-info">
-                    <span className="question-type">Question Type: {isTITA ? 'TITA' : 'MCQ'}</span>
-                    <span className="question-marks">Marks: +3 | -1</span>
-                </div>
-
-                <div className="cat-body">
-                    <div className="cat-question-panel">
-                        <div className="question-header-row">
-                            <div className="question-number">Question No. {currentQ + 1}</div>
-                            <div className="question-actions">
-                                <button
-                                    className={`bookmark-btn ${isBookmarked(q.id) ? 'active' : ''}`}
-                                    onClick={() => {
-                                        toggleBookmark(q.id);
-                                        setProgress(getProgress());
-                                    }}
-                                    title="Bookmark for later"
-                                >
-                                    {isBookmarked(q.id) ? '★ Bookmarked' : '☆ Bookmark'}
-                                </button>
-                                <div className="question-counter">
-                                    {currentQ + 1} of {selectedQuestions.length}
-                                </div>
-                            </div>
-                        </div>
-                        <div className="question-text">{q.question}</div>
-
-                        {isTITA ? (
-                            <div className="tita-section">
-                                <div className="tita-input-display">
-                                    {titaInputs[currentQ] || ''}
-                                    <span className="tita-cursor">|</span>
-                                </div>
-                                <div className="number-pad">
-                                    <button className="numpad-btn backspace" onClick={handleBackspace}>Backspace</button>
-                                    <div className="numpad-grid">
-                                        {['7', '8', '9', '4', '5', '6', '1', '2', '3', '0', '.', '-'].map((num) => (
-                                            <button key={num} className="numpad-btn" onClick={() => handleNumPadClick(num)}>{num}</button>
-                                        ))}
-                                    </div>
-                                    <button className="numpad-btn clear-all" onClick={clearResponse}>Clear All</button>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="options-list">
-                                {q.options && q.options.map((opt, i) => {
-                                    const isSelected = answers[currentQ] === i;
-                                    return (
-                                        <button
-                                            key={i}
-                                            className={`quiz-option ${isSelected ? 'selected' : ''}`}
-                                            onClick={() => setAnswers({ ...answers, [currentQ]: i })}
-                                        >
-                                            <span className="option-radio">{isSelected ? '●' : '○'}</span>
-                                            <span className="option-text">{opt}</span>
-                                        </button>
-                                    );
-                                })}
+                    <div className="header-section center">
+                        {isTimed && (
+                            <div className={`cat-timer-box ${timeLeft < 60 ? 'critical' : timeLeft < 300 ? 'warning' : ''}`}>
+                                <span className="timer-text">Time Left: </span>
+                                <span className="timer-digits">{formatTime(timeLeft)}</span>
                             </div>
                         )}
+                    </div>
+                    <div className="header-section right">
+                        <button className="cat-tool-btn" onClick={() => setShowCalculator(!showCalculator)} title="Calculator">
+                            🧮
+                        </button>
+                        <button className="cat-exit-btn" onClick={() => setShowExitConfirm(true)}>
+                            ✕ Exit
+                        </button>
+                    </div>
+                </header>
 
-                        <div className="cat-controls">
+                {/* Question Type Bar */}
+                <div className="cat-type-bar">
+                    <span className="type-info">Type: {isTITA ? 'TITA' : 'MCQ'} | Marks: <span className="positive">+3</span> <span className="negative">-1</span></span>
+                </div>
+
+                {/* Main Layout */}
+                <div className="cat-main-layout">
+                    {/* Question Area - Scrollable */}
+                    <main className="cat-question-area">
+                        <div className="question-scroll-container">
+                            {/* Question Header */}
+                            <div className="cat-q-header">
+                                <h2 className="q-number">Question No. {currentQ + 1}</h2>
+                                <div className="q-actions">
+                                    <button
+                                        className={`action-btn bookmark ${isBookmarked(q.id) ? 'active' : ''}`}
+                                        onClick={() => { toggleBookmark(q.id); setProgress(getProgress()); }}
+                                    >
+                                        {isBookmarked(q.id) ? '★ Saved' : '☆ Save'}
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Question Text */}
+                            <div className="cat-question-text">
+                                <p>{q.question}</p>
+                            </div>
+
+                            {/* Answer Section */}
+                            {isTITA ? (
+                                <div className="cat-tita-section">
+                                    <div className="tita-input-box">
+                                        <input
+                                            type="text"
+                                            value={titaInputs[currentQ] || ''}
+                                            readOnly
+                                            placeholder="Enter your answer"
+                                        />
+                                    </div>
+                                    <div className="cat-numpad">
+                                        <button className="np-btn fn" onClick={handleBackspace}>Backspace</button>
+                                        <div className="np-grid">
+                                            {['7', '8', '9', '4', '5', '6', '1', '2', '3', '0', '.', '-'].map(n => (
+                                                <button key={n} className="np-btn" onClick={() => handleNumPadClick(n)}>{n}</button>
+                                            ))}
+                                        </div>
+                                        <button className="np-btn fn clear" onClick={clearResponse}>Clear All</button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="cat-options">
+                                    {q.options && q.options.map((opt, i) => (
+                                        <label key={i} className={`cat-option ${answers[currentQ] === i ? 'selected' : ''}`}>
+                                            <input
+                                                type="radio"
+                                                name={`q-${currentQ}`}
+                                                checked={answers[currentQ] === i}
+                                                onChange={() => setAnswers({ ...answers, [currentQ]: i })}
+                                            />
+                                            <span className="option-letter">{optionLabels[i]}</span>
+                                            <span className="option-content">{opt}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Bottom Controls */}
+                        <div className="cat-bottom-controls">
                             <div className="controls-left">
                                 <button
-                                    className="cat-btn prev"
+                                    className={`cat-ctrl-btn mark ${isCurrentMarked ? 'active' : ''}`}
+                                    onClick={() => {
+                                        toggleMarkForReview();
+                                        if (currentQ < selectedQuestions.length - 1) goToQuestion(currentQ + 1);
+                                    }}
+                                >
+                                    Mark for Review & Next
+                                </button>
+                                <button className="cat-ctrl-btn clear" onClick={clearResponse}>
+                                    Clear Response
+                                </button>
+                            </div>
+                            <div className="controls-right">
+                                <button
+                                    className="cat-ctrl-btn prev"
                                     onClick={() => goToQuestion(currentQ - 1)}
                                     disabled={currentQ === 0}
                                 >
                                     ◀ Previous
                                 </button>
-                            </div>
-                            <div className="controls-center">
-                                <button className="cat-btn mark-review" onClick={() => {
-                                    setMarkedForReview(prev => new Set([...prev, currentQ]));
-                                    if (currentQ < selectedQuestions.length - 1) goToQuestion(currentQ + 1);
-                                }}>Mark for Review & Next</button>
-                                <button className="cat-btn clear" onClick={clearResponse}>Clear Response</button>
-                            </div>
-                            <div className="controls-right">
-                                <button className="cat-btn save-next" onClick={() => {
-                                    if (currentQ < selectedQuestions.length - 1) goToQuestion(currentQ + 1);
-                                    else setShowSubmitConfirm(true);
-                                }}>{currentQ === selectedQuestions.length - 1 ? 'Save & Submit' : 'Save & Next ▶'}</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="cat-sidebar">
-                        <div className="cat-section-header"><span>Question Palette</span></div>
-                        <div className="cat-question-grid">
-                            {selectedQuestions.map((_, i) => (
-                                <button key={i} className={`grid-btn ${getStatus(i)} ${i === currentQ ? 'current' : ''}`} onClick={() => goToQuestion(i)}>
-                                    {i + 1}
+                                <button
+                                    className="cat-ctrl-btn next primary"
+                                    onClick={() => {
+                                        if (currentQ < selectedQuestions.length - 1) {
+                                            goToQuestion(currentQ + 1);
+                                        } else {
+                                            setShowSubmitConfirm(true);
+                                        }
+                                    }}
+                                >
+                                    Save & Next ▶
                                 </button>
-                            ))}
+                            </div>
+                        </div>
+                    </main>
+
+                    {/* Sidebar */}
+                    <aside className="cat-sidebar-panel">
+                        <div className="sidebar-scroll">
+                            <div className="panel-header">
+                                <span>Question Palette</span>
+                            </div>
+
+                            <div className="palette-stats">
+                                <span className="ps-item answered">{stats.answered} Answered</span>
+                                <span className="ps-item not-answered">{stats.unanswered} Not Answered</span>
+                                <span className="ps-item marked">{stats.marked} Marked</span>
+                            </div>
+
+                            <div className="question-palette">
+                                {selectedQuestions.map((_, i) => (
+                                    <button
+                                        key={i}
+                                        className={`palette-btn ${getStatus(i)} ${i === currentQ ? 'current' : ''}`}
+                                        onClick={() => goToQuestion(i)}
+                                    >
+                                        {i + 1}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div className="palette-legend">
+                                <div className="legend-item"><span className="lg-box answered"></span> Answered</div>
+                                <div className="legend-item"><span className="lg-box not-answered"></span> Not Answered</div>
+                                <div className="legend-item"><span className="lg-box not-visited"></span> Not Visited</div>
+                                <div className="legend-item"><span className="lg-box marked"></span> Marked for Review</div>
+                                <div className="legend-item"><span className="lg-box answered-marked"></span> Answered & Marked</div>
+                            </div>
                         </div>
 
-                        <div className="cat-legend">
-                            <div className="legend-item"><span className="legend-box answered"></span> Answered</div>
-                            <div className="legend-item"><span className="legend-box not-answered"></span> Not Answered</div>
-                            <div className="legend-item"><span className="legend-box not-visited"></span> Not Visited</div>
-                            <div className="legend-item"><span className="legend-box marked"></span> Marked for Review</div>
-                            <div className="legend-item"><span className="legend-box answered-marked"></span> Answered & Marked</div>
-                        </div>
-
-                        <button className="cat-submit-btn" onClick={() => setShowSubmitConfirm(true)}>Submit</button>
-                    </div>
+                        <button className="cat-submit-test" onClick={() => setShowSubmitConfirm(true)}>
+                            Submit Test
+                        </button>
+                    </aside>
                 </div>
 
+                {/* Calculator Modal */}
+                {showCalculator && (
+                    <div className="calc-modal">
+                        <div className="calc-container">
+                            <div className="calc-header">
+                                <span>Calculator</span>
+                                <button className="calc-close" onClick={() => setShowCalculator(false)}>✕</button>
+                            </div>
+                            <div className="calc-display">
+                                <div className="calc-expression"></div>
+                                <div className="calc-result">{calcDisplay}</div>
+                            </div>
+                            <div className="calc-buttons">
+                                <div className="calc-row memory">
+                                    <button onClick={calcMemoryClear}>MC</button>
+                                    <button onClick={calcMemoryRecall}>MR</button>
+                                    <button onClick={calcMemoryStore}>MS</button>
+                                    <button onClick={calcMemoryAdd}>M+</button>
+                                    <button onClick={calcMemorySubtract}>M-</button>
+                                </div>
+                                <div className="calc-row">
+                                    <button className="fn-btn red" onClick={calcBackspace}>←</button>
+                                    <button className="fn-btn red" onClick={calcClear}>C</button>
+                                    <button className="fn-btn red" onClick={calcToggleSign}>+/-</button>
+                                    <button className="fn-btn" onClick={calcSqrt}>√</button>
+                                </div>
+                                <div className="calc-row">
+                                    <button onClick={() => calcInput('7')}>7</button>
+                                    <button onClick={() => calcInput('8')}>8</button>
+                                    <button onClick={() => calcInput('9')}>9</button>
+                                    <button className="fn-btn" onClick={() => calcOperation('/')}>/</button>
+                                    <button className="fn-btn" onClick={calcPercent}>%</button>
+                                </div>
+                                <div className="calc-row">
+                                    <button onClick={() => calcInput('4')}>4</button>
+                                    <button onClick={() => calcInput('5')}>5</button>
+                                    <button onClick={() => calcInput('6')}>6</button>
+                                    <button className="fn-btn" onClick={() => calcOperation('*')}>*</button>
+                                    <button className="fn-btn" onClick={calcInverse}>1/x</button>
+                                </div>
+                                <div className="calc-row">
+                                    <button onClick={() => calcInput('1')}>1</button>
+                                    <button onClick={() => calcInput('2')}>2</button>
+                                    <button onClick={() => calcInput('3')}>3</button>
+                                    <button className="fn-btn" onClick={() => calcOperation('-')}>-</button>
+                                    <button className="fn-btn green equals" onClick={calcEquals}>=</button>
+                                </div>
+                                <div className="calc-row">
+                                    <button onClick={() => calcInput('0')}>0</button>
+                                    <button onClick={() => calcInput('.')}>.</button>
+                                    <button className="fn-btn" onClick={() => calcOperation('+')}>+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Submit Modal */}
                 {showSubmitConfirm && (
-                    <div className="modal-overlay">
-                        <div className="modal">
+                    <div className="cat-modal-overlay">
+                        <div className="cat-modal">
                             <h3>Submit Test?</h3>
-                            <p>You have answered {Object.keys(answers).length} of {selectedQuestions.length} questions.</p>
-                            <div className="modal-actions">
-                                <button className="btn btn-secondary" onClick={() => setShowSubmitConfirm(false)}>Go Back</button>
-                                <button className="btn btn-primary" onClick={handleQuizSubmit}>Confirm Submit</button>
+                            <div className="modal-summary">
+                                <p><strong>Answered:</strong> <span className="good">{stats.answered}</span></p>
+                                <p><strong>Not Answered:</strong> <span className="warn">{stats.unanswered}</span></p>
+                                <p><strong>Marked for Review:</strong> {stats.marked}</p>
+                            </div>
+                            {stats.unanswered > 0 && (
+                                <p className="warning-text">⚠️ You have {stats.unanswered} unanswered questions!</p>
+                            )}
+                            <div className="modal-btns">
+                                <button className="modal-btn cancel" onClick={() => setShowSubmitConfirm(false)}>Go Back</button>
+                                <button className="modal-btn submit" onClick={handleQuizSubmit}>Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Exit Modal */}
+                {showExitConfirm && (
+                    <div className="cat-modal-overlay">
+                        <div className="cat-modal">
+                            <h3>Exit Test?</h3>
+                            <p>Your progress will be lost. Are you sure?</p>
+                            <div className="modal-btns">
+                                <button className="modal-btn cancel" onClick={() => setShowExitConfirm(false)}>Continue</button>
+                                <button className="modal-btn exit" onClick={handleExitQuiz}>Exit</button>
                             </div>
                         </div>
                     </div>
@@ -517,9 +873,9 @@ export default function Course() {
                                         </div>
                                     </div>
                                     <div className="solution-explanation">
-                                        <div className="explanation-header">Ninja Insight & Approach</div>
+                                        <div className="explanation-header">Concept & Approach</div>
                                         <button className="btn-hint-toggle" onClick={() => setShowNinjaHint({ ...showNinjaHint, [i]: !isHintExpanded })}>
-                                            {isHintExpanded ? 'Hide Ninja Secret' : 'Reveal Ninja Secret 🥷'}
+                                            {isHintExpanded ? 'Hide Details' : 'View Approach'}
                                         </button>
                                         {isHintExpanded && (
                                             <div className="hint-content">
@@ -553,7 +909,7 @@ export default function Course() {
             <div className="container">
                 {stage !== 'quiz' && (
                     <div className="page-header">
-                        <Link to="/" className="back-link">← Back</Link>
+                        <button className="back-link" onClick={handleBack}>← Back</button>
                         <h1>Question Bank</h1>
                         <p>150 Most Expected CAT 2026 Structures</p>
                     </div>
@@ -609,6 +965,16 @@ export default function Course() {
                     </div>
                 </div>
             )}
+
+            {/* Auth Modal for sign-in before practice */}
+            <AuthModal
+                isOpen={showAuthModal}
+                onClose={() => {
+                    setShowAuthModal(false);
+                    setPendingAction(null);
+                }}
+                onSuccess={handleAuthSuccess}
+            />
         </main>
     );
 }

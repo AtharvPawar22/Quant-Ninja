@@ -270,8 +270,7 @@ export default function NotesQuiz() {
         <div className="config-container">
             <div className="config-section">
                 <div className="section-header">
-                    <span className="section-icon">📄</span>
-                    <h3>Upload Your Notes</h3>
+                    <h3>Upload Notes</h3>
                 </div>
                 <div
                     className="upload-zone"
@@ -287,7 +286,7 @@ export default function NotesQuiz() {
                         multiple
                         hidden
                     />
-                    <div className="upload-icon">📤</div>
+                    <div className="upload-icon-box"></div>
                     <p className="upload-text">Drop files here or click to browse</p>
                     <p className="upload-hint">Supports PDF, PNG, JPG (including handwritten notes)</p>
                 </div>
@@ -296,9 +295,6 @@ export default function NotesQuiz() {
                     <div className="file-list">
                         {files.map((file, i) => (
                             <div key={i} className="file-item">
-                                <span className="file-icon">
-                                    {file.type === 'application/pdf' ? '📕' : '🖼️'}
-                                </span>
                                 <span className="file-name">{file.name}</span>
                                 <button
                                     className="file-remove"
@@ -331,7 +327,6 @@ export default function NotesQuiz() {
 
             <div className="config-section">
                 <div className="section-header">
-                    <span className="section-icon">📊</span>
                     <h3>Difficulty Level</h3>
                 </div>
                 <div className="option-buttons">
@@ -349,7 +344,6 @@ export default function NotesQuiz() {
 
             <div className="config-section">
                 <div className="section-header">
-                    <span className="section-icon">🔢</span>
                     <h3>Number of Questions</h3>
                 </div>
                 <div className="option-buttons">
@@ -601,7 +595,7 @@ export default function NotesQuiz() {
         return (
             <div className="result-container">
                 <div className="result-header">
-                    <h1>Analysis Complete! 📊</h1>
+                    <h1>Analysis Complete</h1>
                     <p>Performance on CAT {difficulty === 'mixture' ? 'Level' : difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} Questions</p>
                 </div>
 
@@ -612,9 +606,9 @@ export default function NotesQuiz() {
                             <span className="score-total">/ {results.total}</span>
                         </div>
                         <div className="score-label">
-                            {percentage >= 90 ? 'Ninja Master! 🐉' :
-                                percentage >= 75 ? 'Expert Level 🥋' :
-                                    percentage >= 50 ? 'Strong Foundation 👍' : 'Keep Training 📚'}
+                            {percentage >= 90 ? 'Mastery Level' :
+                                percentage >= 75 ? 'Advanced Proficiency' :
+                                    percentage >= 50 ? 'Strong Foundation' : 'Review Required'}
                         </div>
                     </div>
 
@@ -635,21 +629,19 @@ export default function NotesQuiz() {
                 </div>
 
                 <div className="analysis-breakdown">
-                    <h3>💡 Performance Insights</h3>
+                    <h3>Performance Insights</h3>
                     <div className="insights-grid">
                         <div className="insight-card">
-                            <span className="insight-icon">🎯</span>
                             <span className="insight-text">Accuracy: {percentage}%</span>
                         </div>
                         <div className="insight-card">
-                            <span className="insight-icon">⏱️</span>
                             <span className="insight-text">Avg Time: {formatTime(Math.max(0, (getTimerDuration(questionCount) - timeLeft) / (results.total - results.unattempted || 1)))} / question</span>
                         </div>
                     </div>
                 </div>
 
                 <div className="solutions-section">
-                    <h3>🔍 Detailed Solutions & Analysis</h3>
+                    <h3>Solutions & Analysis</h3>
                     {questions.map((q, i) => {
                         const userAnswer = answers[i];
                         const isCorrect = userAnswer && userAnswer.toString().toLowerCase() === q.answer.toString().toLowerCase();
@@ -728,10 +720,10 @@ export default function NotesQuiz() {
 
                 <div className="result-actions">
                     <button className="btn btn-secondary" onClick={resetQuiz}>
-                        📄 Upload New Notes
+                        Upload New Notes
                     </button>
                     <Link to="/" className="btn btn-primary">
-                        🏠 Back to Home
+                        Back to Home
                     </Link>
                 </div>
             </div>

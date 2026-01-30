@@ -143,6 +143,117 @@
     transform: rotate(-45deg) translate(5px, -5px);
 }
 
+/* User Profile Styles */
+.user-profile-wrapper {
+    position: relative;
+}
+
+.user-profile-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--bg-card);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    color: var(--text-secondary);
+}
+
+.user-profile-btn:hover {
+    border-color: var(--accent-gold);
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    transform: scale(1.05);
+}
+
+.user-profile-btn.signed-in {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-gold));
+    border: none;
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3);
+}
+
+.user-profile-btn.signed-in:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 16px rgba(var(--accent-rgb), 0.4);
+}
+
+.user-initial {
+    text-transform: uppercase;
+    font-family: var(--font-display);
+}
+
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 0.75rem);
+    right: 0;
+    min-width: 200px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    z-index: 1002;
+    overflow: hidden;
+    animation: dropdownSlide 0.2s ease;
+}
+
+@keyframes dropdownSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-dropdown-header {
+    padding: 1rem;
+    background: var(--bg-hover);
+}
+
+.user-email {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    word-break: break-all;
+}
+
+.user-dropdown-divider {
+    height: 1px;
+    background: var(--border);
+}
+
+.user-dropdown-item {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: left;
+}
+
+.user-dropdown-item:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.user-dropdown-item svg {
+    opacity: 0.7;
+}
+
 @media (max-width: 992px) {
     .navbar-menu {
         gap: 1.5rem;

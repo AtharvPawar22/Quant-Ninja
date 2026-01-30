@@ -5,12 +5,12 @@
 
 const STORAGE_KEY = 'quant_ninja_progress';
 
-export const getProgress = () => {
+export const getProgress = () => {1
     const saved = localStorage.getItem(STORAGE_KEY);
     if (!saved) {
         return {
-            attempted: {}, // { qId: { isCorrect: boolean, timeSpent: number, date: string } }
-            bookmarked: [], // [qId]
+            attempted: {}, 
+            bookmarked: [], 
             lastActive: new Date().toISOString()
         };
     }

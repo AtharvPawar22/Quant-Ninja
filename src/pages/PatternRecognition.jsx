@@ -1,10 +1,14 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { PATTERNS, CATEGORIES, DIFFICULTIES } from '../data/patterns';
 import { questions as PYQS } from '../data/cat-pyq';
+import { isAuthenticated } from '../services/authService';
+import AuthModal from '../components/AuthModal';
 import './PatternRecognition.css';
 
 export default function PatternRecognition() {
+    const navigate = useNavigate();
+
     const [state, setState] = useState('start'); // start, playing, pyq, solution, variant, done
     const [config, setConfig] = useState({ category: 'ALL', difficulty: 'intermediate' });
     const [sessionPatterns, setSessionPatterns] = useState([]);
@@ -16,8 +20,20 @@ export default function PatternRecognition() {
     const [showSolution, setShowSolution] = useState(false);
     const [variantResult, setVariantResult] = useState(null); // null, correct, wrong
 
+    // Auth Modal State
+    const [showAuthModal, setShowAuthModal] = useState(false);
+
     // Filter and shuffle patterns based on config
     const prepareSession = () => {
+        // Check if user is authenticated before starting
+        if (!isAuthenticated()) {
+            setShowAuthModal(true);
+            return;
+        }
+        startSession();
+    };
+
+    const startSession = () => {
         let filtered = config.category === 'ALL'
             ? [...PATTERNS]
             : PATTERNS.filter(p => p.category === config.category);
@@ -37,6 +53,26 @@ export default function PatternRecognition() {
         setScore(0);
         setHistory([]);
         startFlash(shuffled[0]);
+    };
+
+    // Handle auth success - start session
+    const handleAuthSuccess = () => {
+        startSession();
+    };
+
+    // Hierarchical back navigation
+    const handleBack = () => {
+        switch (state) {
+            case 'playing':
+            case 'pyq':
+            case 'solution':
+            case 'variant':
+            case 'done':
+                setState('start');
+                break;
+            default:
+                navigate('/');
+        }
     };
 
     const startFlash = (pattern) => {
@@ -167,7 +203,7 @@ export default function PatternRecognition() {
         <main className="pattern-page">
             <div className="container">
                 <div className="page-header">
-                    <Link to="/" className="back-link">← Back to Dojo</Link>
+                    <button className="back-link" onClick={handleBack}>← Back to Dojo</button>
                     <h1>Pattern Dojo</h1>
                     <p className="subtitle">Build muscle memory for CAT Quant structures</p>
                 </div>
@@ -214,21 +250,21 @@ export default function PatternRecognition() {
 
                         <div className="training-info">
                             <div className="info-item">
-                                <span className="icon">⚡</span>
+                                <span className="icon"></span>
                                 <div>
                                     <h3>Pattern Flash</h3>
-                                    <p>Identify the question structure in SECONDS. No pen, no paper.</p>
+                                    <p>Identify the question structure in seconds.</p>
                                 </div>
                             </div>
                             <div className="info-item">
-                                <span className="icon">🎯</span>
+                                <span className="icon"></span>
                                 <div>
                                     <h3>Trigger Training</h3>
-                                    <p>Spot "trigger words" that reveal the hidden math architecture.</p>
+                                    <p>Spot words that reveal the hidden math architecture.</p>
                                 </div>
                             </div>
                             <div className="info-item">
-                                <span className="icon">🧠</span>
+                                <span className="icon"></span>
                                 <div>
                                     <h3>Variant Reinforcement</h3>
                                     <p>Recognize the same pattern under different surface stories.</p>
@@ -479,8 +515,8 @@ export default function PatternRecognition() {
                 {state === 'done' && (
                     <div className="done-container animate-in">
                         <div className="results-card">
-                            <div className="trophy">🏆</div>
-                            <h2>Session Complete!</h2>
+                            <div className="ready-brand-mark"></div>
+                            <h2>Session Complete</h2>
                             <div className="score-summary">
                                 <div className="score-circle">
                                     <span className="big-score">{score}</span>
@@ -496,7 +532,7 @@ export default function PatternRecognition() {
                                         <div key={i} className="speed-metric">
                                             <span className="metric-label">{h.patternName}</span>
                                             <span className={`speed-tag ${h.responseTime < 3 ? 'fast' : 'slow'}`}>
-                                                {h.responseTime}s {h.responseTime < 3 ? '⚡ Fast' : '🐢 Slow'}
+                                                {h.responseTime}s {h.responseTime < 3 ? 'Fast' : 'Slow'}
                                             </span>
                                         </div>
                                     ))}
@@ -535,6 +571,13 @@ export default function PatternRecognition() {
                     </div>
                 )}
             </div>
+
+            {/* Auth Modal for sign-in before training */}
+            <AuthModal
+                isOpen={showAuthModal}
+                onClose={() => setShowAuthModal(false)}
+                onSuccess={handleAuthSuccess}
+            />
         </main>
     );
 }

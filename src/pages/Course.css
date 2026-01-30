@@ -54,6 +54,12 @@
     letter-spacing: 0.1em;
     margin-bottom: 2rem;
     transition: all var(--transition-fast);
+    /* Button reset for when used as button element */
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: none;
 }
 
 .back-link:hover {
@@ -503,6 +509,214 @@
 .btn-start-random:hover {
     transform: scale(1.05) translateY(-5px);
     box-shadow: 0 15px 40px rgba(155, 125, 212, 0.6);
+}
+
+/* Ready Screen (Pre-Quiz) */
+.ready-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    padding: 2rem;
+}
+
+.ready-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 32px;
+    padding: 3.5rem 4rem;
+    text-align: center;
+    max-width: 520px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ready-brand-mark {
+    width: 2px;
+    height: 32px;
+    background: var(--accent-primary);
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 0 15px var(--accent-primary);
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.ready-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 2.5rem;
+    letter-spacing: -0.02em;
+}
+
+.ready-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    background: var(--bg-primary);
+    border-radius: 20px;
+    margin-bottom: 2rem;
+}
+
+.ready-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ready-stat .stat-value {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--accent-primary);
+    line-height: 1;
+}
+
+.ready-stat .stat-label {
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+}
+
+.ready-divider {
+    width: 1px;
+    height: 40px;
+    background: var(--border-color);
+}
+
+.timer-toggle {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.toggle-btn {
+    padding: 0.85rem 1.75rem;
+    border-radius: 100px;
+    border: 2px solid var(--border-color);
+    background: transparent;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.toggle-btn:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+}
+
+.toggle-btn.active {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: white;
+    box-shadow: 0 4px 20px rgba(155, 125, 212, 0.4);
+}
+
+.start-btn-big {
+    width: 100%;
+    padding: 1.25rem 2rem;
+    background: linear-gradient(135deg, var(--accent-primary), #7c5fc2);
+    border: none;
+    border-radius: 16px;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 30px rgba(155, 125, 212, 0.4);
+}
+
+.start-btn-big:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(155, 125, 212, 0.6);
+}
+
+.start-btn-big:active {
+    transform: translateY(0);
+}
+
+.start-arrow {
+    font-size: 1.4rem;
+    transition: transform 0.3s ease;
+}
+
+.start-btn-big:hover .start-arrow {
+    transform: translateX(5px);
+}
+
+.back-link-subtle {
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.back-link-subtle:hover {
+    color: var(--accent-primary);
+}
+
+@media (max-width: 600px) {
+    .ready-card {
+        padding: 2.5rem 1.5rem;
+    }
+
+    .ready-stats {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .ready-divider {
+        width: 60px;
+        height: 1px;
+    }
+
+    .timer-toggle {
+        flex-direction: column;
+    }
+
+    .toggle-btn {
+        width: 100%;
+    }
 }
 
 /* Result Screen specific */
