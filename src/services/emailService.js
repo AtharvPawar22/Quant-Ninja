@@ -14,9 +14,13 @@ const EMAILS_TABLE = 'emails'
  * @returns {Promise<{success: boolean, data?: any, error?: string}>}
  */
 export const saveEmailToWaitlist = async (email, metadata = {}) => {
+    if (!supabase) {
+        return { success: false, error: 'Supabase not configured. Please check your environment variables.' }
+    }
+
     try {
         const normalizedEmail = email.toLowerCase().trim()
-        
+
         const { data, error } = await supabase
             .from(EMAILS_TABLE)
             .upsert(
@@ -27,7 +31,6 @@ export const saveEmailToWaitlist = async (email, metadata = {}) => {
                     user_agent: navigator.userAgent,
                     created_at: new Date().toISOString(),
                     updated_at: new Date().toISOString(),
-                    // Custom metadata
                     ...metadata
                 },
                 {
@@ -55,9 +58,13 @@ export const saveEmailToWaitlist = async (email, metadata = {}) => {
  * @returns {Promise<{exists: boolean, data?: any, error?: string}>}
  */
 export const checkEmailExists = async (email) => {
+    if (!supabase) {
+        return { exists: false, error: 'Supabase not configured' }
+    }
+
     try {
         const normalizedEmail = email.toLowerCase().trim()
-        
+
         const { data, error } = await supabase
             .from(EMAILS_TABLE)
             .select('email, created_at')
@@ -66,7 +73,6 @@ export const checkEmailExists = async (email) => {
 
         if (error) {
             if (error.code === 'PGRST116') {
-                // Email not found
                 return { exists: false }
             }
             return { exists: false, error: error.message }
@@ -84,6 +90,10 @@ export const checkEmailExists = async (email) => {
  * @returns {Promise<{success: boolean, data?: any[], error?: string}>}
  */
 export const getAllEmails = async () => {
+    if (!supabase) {
+        return { success: false, error: 'Supabase not configured' }
+    }
+
     try {
         const { data, error } = await supabase
             .from(EMAILS_TABLE)
@@ -108,9 +118,13 @@ export const getAllEmails = async () => {
  * @returns {Promise<{success: boolean, error?: string}>}
  */
 export const deleteEmail = async (email) => {
+    if (!supabase) {
+        return { success: false, error: 'Supabase not configured' }
+    }
+
     try {
         const normalizedEmail = email.toLowerCase().trim()
-        
+
         const { error } = await supabase
             .from(EMAILS_TABLE)
             .delete()
