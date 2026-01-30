@@ -9,11 +9,11 @@ import {
     getStats
 } from '../services/progressService';
 import { isAuthenticated } from '../services/authService';
+import { saveEmailToWaitlist } from '../services/emailService.js';
 import AuthModal from '../components/AuthModal';
 import './Course.css';
-import './NotesQuiz.css'; // Reuse CAT UI styles
+import './NotesQuiz.css';
 
-// Dev emails that bypass the waitlist for testing
 const DEV_EMAILS = ['xyz111@email.com', 'admin@quantninja.com'];
 
 const TOPICS = [
@@ -27,10 +27,11 @@ const TOPICS = [
 export default function Course() {
     const navigate = useNavigate();
 
-    // Access Control
     const [showModal, setShowModal] = useState(false);
     const [email, setEmail] = useState('');
     const [submitted, setSubmitted] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [submitError, setSubmitError] = useState(null);
     const [hasAccess, setHasAccess] = useState(false);
 
     // Auth Modal State
@@ -136,20 +137,35 @@ export default function Course() {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [stage, currentQ, selectedQuestions.length, showSubmitConfirm, showExitConfirm]);
 
-    // Handle Access
-    const handleAccessSubmit = (e) => {
+    const handleAccessSubmit = async (e) => {
         e.preventDefault();
+        setSubmitError(null);
+
         if (DEV_EMAILS.includes(email.toLowerCase())) {
             setHasAccess(true);
             setShowModal(false);
             return;
         }
-        setSubmitted(true);
-        setTimeout(() => {
-            setShowModal(false);
-            setSubmitted(false);
-            setEmail('');
-        }, 2000);
+
+        setIsLoading(true);
+
+        const result = await saveEmailToWaitlist(email, {
+            source: 'course_access_request',
+            page: 'course',
+        });
+
+        setIsLoading(false);
+
+        if (result.success) {
+            setSubmitted(true);
+            setTimeout(() => {
+                setShowModal(false);
+                setSubmitted(false);
+                setEmail('');
+            }, 2000);
+        } else {
+            setSubmitError(result.error || 'Failed to join waitlist. Please try again.');
+        }
     };
 
     // Filter Logic
@@ -944,7 +960,7 @@ export default function Course() {
             </div>
 
             {showModal && (
-                <div className="modal-overlay" onClick={() => setShowModal(false)}>
+                <div className="modal-overlay" onClick={() => !isLoading && setShowModal(false)}>
                     <div className="modal" onClick={(e) => e.stopPropagation()}>
                         {!submitted ? (
                             <form onSubmit={handleAccessSubmit}>
@@ -956,8 +972,16 @@ export default function Course() {
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="samurai@quantninja.com"
                                     required
+                                    disabled={isLoading}
                                 />
-                                <button type="submit" className="btn btn-primary btn-full">Unlock Dojo</button>
+                                {submitError && (
+                                    <p style={{color: '#ef4444', fontSize: '0.875rem', marginTop: '0.5rem'}}>
+                                        {submitError}
+                                    </p>
+                                )}
+                                <button type="submit" className="btn btn-primary btn-full" disabled={isLoading}>
+                                    {isLoading ? 'Processing...' : 'Unlock Dojo'}
+                                </button>
                             </form>
                         ) : (
                             <div className="success"><h3>Waitlisted!</h3><p>Check your email for access soon.</p></div>

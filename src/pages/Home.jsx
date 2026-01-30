@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { saveEmailToWaitlist } from '../services/emailService.js';
 import '../styles/animations.css';
 import './Home.css';
 
@@ -7,15 +8,31 @@ export default function Home() {
     const [showModal, setShowModal] = useState(false);
     const [email, setEmail] = useState('');
     const [submitted, setSubmitted] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setSubmitted(true);
-        setTimeout(() => {
-            setShowModal(false);
-            setSubmitted(false);
-            setEmail('');
-        }, 2000);
+        setIsLoading(true);
+        setError(null);
+
+        const result = await saveEmailToWaitlist(email, {
+            source: 'waitlist_modal',
+            page: 'home',
+        });
+
+        setIsLoading(false);
+
+        if (result.success) {
+            setSubmitted(true);
+            setTimeout(() => {
+                setShowModal(false);
+                setSubmitted(false);
+                setEmail('');
+            }, 2000);
+        } else {
+            setError(result.error || 'Something went wrong. Please try again.');
+        }
     };
 
     return (
@@ -216,13 +233,15 @@ export default function Home() {
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         required
+                                        disabled={isLoading}
                                         className="modal-input"
                                     />
-                                    <button type="submit" className="btn btn-primary btn-shine">
-                                        Secure Early Access
+                                    {error && <p className="error-message" style={{color: '#ef4444', fontSize: '0.875rem', marginTop: '-0.5rem'}}>{error}</p>}
+                                    <button type="submit" className="btn btn-primary btn-shine" disabled={isLoading}>
+                                        {isLoading ? 'Saving...' : 'Secure Early Access'}
                                     </button>
                                 </form>
-                                <button className="modal-close" onClick={() => setShowModal(false)}>✕</button>
+                                <button className="modal-close" onClick={() => setShowModal(false)} disabled={isLoading}>✕</button>
                             </>
                         ) : (
                             <div className="success">
