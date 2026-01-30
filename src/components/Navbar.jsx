@@ -15,7 +15,13 @@ export default function Navbar() {
 
   // Check auth state on mount and when location changes
   useEffect(() => {
-    setUser(getUser());
+    const updateUser = () => setUser(getUser());
+
+    updateUser();
+
+    // Listen for storage events (emitted by authService for cross-instance and same-tab sync)
+    window.addEventListener('storage', updateUser);
+    return () => window.removeEventListener('storage', updateUser);
   }, [location]);
 
   // Close user menu when clicking outside

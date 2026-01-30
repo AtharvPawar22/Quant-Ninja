@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { signIn } from '../services/authService';
+import { signIn, signInWithGoogle } from '../services/authService';
 import './AuthModal.css';
 
 export default function AuthModal({ isOpen, onClose, onSuccess }) {
@@ -8,6 +8,24 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
     const [error, setError] = useState('');
 
     if (!isOpen) return null;
+
+    const handleGoogleSignIn = async () => {
+        setIsSubmitting(true);
+        setError('');
+        try {
+            const result = await signInWithGoogle();
+            // result might contain 'user' in mock mode or 'url' in real Supabase mode
+            if (result && result.user) {
+                if (onSuccess) onSuccess(result.user);
+                onClose();
+            }
+            // In real mode, it redirects, so we don't necessarily need to handle success here
+        } catch (err) {
+            setError(err.message || 'Google sign-in failed');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -25,14 +43,19 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
         // Simulate a brief delay for UX
         await new Promise(resolve => setTimeout(resolve, 500));
 
-        const user = signIn(email);
-        setIsSubmitting(false);
-        setEmail('');
+        try {
+            const user = await signIn(email);
+            setIsSubmitting(false);
+            setEmail('');
 
-        if (onSuccess) {
-            onSuccess(user);
+            if (onSuccess) {
+                onSuccess(user);
+            }
+            onClose();
+        } catch (err) {
+            setError('Authentication failed. Please try again.');
+            setIsSubmitting(false);
         }
-        onClose();
     };
 
     const handleBackdropClick = (e) => {
@@ -54,7 +77,11 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
                 <p className="auth-modal-subtitle">Secure your progress within the Dojo</p>
 
                 <div className="auth-social-area">
-                    <button className="google-auth-btn" disabled={isSubmitting}>
+                    <button
+                        className="google-auth-btn"
+                        onClick={handleGoogleSignIn}
+                        disabled={isSubmitting}
+                    >
                         <svg viewBox="0 0 24 24" width="20" height="20">
                             <path fill="#EA4335" d="M5.2662 9.7645C6.199 6.9386 8.8545 4.9091 12 4.9091C13.6909 4.9091 15.2182 5.5091 16.4182 6.4909L19.9091 3C17.7818 1.14545 15.0545 0 12 0C7.27273 0 3.19091 2.69091 1.24091 6.6227L5.2662 9.7645Z" />
                             <path fill="#FBBC04" d="M16.0409 18.0136C14.8727 18.7227 13.5182 19.1364 12 19.1364C8.8545 19.1364 6.199 17.1068 5.2662 14.2809L1.24091 17.4227C3.19091 21.3545 7.27273 24.0455 12 24.0455C15.0545 24.0455 17.7818 23.0545 19.9364 21.3136L16.0409 18.0136Z" />
@@ -110,3 +137,4 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
         </div>
     );
 }
+
