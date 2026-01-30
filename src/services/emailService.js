@@ -1,18 +1,15 @@
 import { supabase } from '../lib/supabase.js'
 
-/**
- * Email Service for QuantNinja
- * Handles storing emails to Supabase for future product notifications.
- */
+const WAITLIST_TABLE = 'waitlist'
 
-const EMAILS_TABLE = 'emails'
+function extractNameFromEmail(email) {
+    const localPart = email.split('@')[0]
+    return localPart
+        .replace(/[._-]/g, ' ')
+        .replace(/\d+/g, '')
+        .trim() || 'Anonymous'
+}
 
-/**
- * Save email to waitlist
- * @param {string} email - The email to save
- * @param {Object} metadata - Optional metadata (source, utm params, etc.)
- * @returns {Promise<{success: boolean, data?: any, error?: string}>}
- */
 export const saveEmailToWaitlist = async (email, metadata = {}) => {
     if (!supabase) {
         return { success: false, error: 'Supabase not configured. Please check your environment variables.' }
@@ -20,18 +17,16 @@ export const saveEmailToWaitlist = async (email, metadata = {}) => {
 
     try {
         const normalizedEmail = email.toLowerCase().trim()
+        const name = metadata.name || extractNameFromEmail(normalizedEmail)
 
         const { data, error } = await supabase
-            .from(EMAILS_TABLE)
+            .from(WAITLIST_TABLE)
             .upsert(
                 {
+                    name: name,
                     email: normalizedEmail,
                     source: metadata.source || 'website',
-                    page: metadata.page || window.location.pathname,
-                    user_agent: navigator.userAgent,
                     created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString(),
-                    ...metadata
                 },
                 {
                     onConflict: 'email',
@@ -52,11 +47,6 @@ export const saveEmailToWaitlist = async (email, metadata = {}) => {
     }
 }
 
-/**
- * Check if email already exists in waitlist
- * @param {string} email - The email to check
- * @returns {Promise<{exists: boolean, data?: any, error?: string}>}
- */
 export const checkEmailExists = async (email) => {
     if (!supabase) {
         return { exists: false, error: 'Supabase not configured' }
@@ -66,7 +56,7 @@ export const checkEmailExists = async (email) => {
         const normalizedEmail = email.toLowerCase().trim()
 
         const { data, error } = await supabase
-            .from(EMAILS_TABLE)
+            .from(WAITLIST_TABLE)
             .select('email, created_at')
             .eq('email', normalizedEmail)
             .single()
@@ -85,10 +75,6 @@ export const checkEmailExists = async (email) => {
     }
 }
 
-/**
- * Get all emails (for admin use - requires proper RLS policies)
- * @returns {Promise<{success: boolean, data?: any[], error?: string}>}
- */
 export const getAllEmails = async () => {
     if (!supabase) {
         return { success: false, error: 'Supabase not configured' }
@@ -96,7 +82,7 @@ export const getAllEmails = async () => {
 
     try {
         const { data, error } = await supabase
-            .from(EMAILS_TABLE)
+            .from(WAITLIST_TABLE)
             .select('*')
             .order('created_at', { ascending: false })
 
@@ -112,11 +98,6 @@ export const getAllEmails = async () => {
     }
 }
 
-/**
- * Delete email from waitlist
- * @param {string} email - The email to delete
- * @returns {Promise<{success: boolean, error?: string}>}
- */
 export const deleteEmail = async (email) => {
     if (!supabase) {
         return { success: false, error: 'Supabase not configured' }
@@ -126,7 +107,7 @@ export const deleteEmail = async (email) => {
         const normalizedEmail = email.toLowerCase().trim()
 
         const { error } = await supabase
-            .from(EMAILS_TABLE)
+            .from(WAITLIST_TABLE)
             .delete()
             .eq('email', normalizedEmail)
 
