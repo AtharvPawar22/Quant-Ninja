@@ -80,14 +80,14 @@
 .mark-line {
     width: 2px;
     height: 100%;
-    background: var(--accent);
-    box-shadow: 0 0 15px var(--accent);
+    background: var(--accent-primary);
+    box-shadow: 0 0 15px var(--accent-primary);
 }
 
 .auth-modal-title {
     font-size: 1.5rem;
     font-weight: 500;
-    color: var(--text);
+    color: var(--text-primary);
     margin: 0 0 0.5rem;
     letter-spacing: 0.02em;
     font-family: var(--font-display);
@@ -171,23 +171,25 @@
     width: 100%;
     padding: 1rem 1.25rem;
     font-size: 0.95rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-prominent);
     border-radius: 0.75rem;
-    background: rgba(0, 0, 0, 0.2);
-    color: var(--text);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
     transition: all 0.2s ease;
     box-sizing: border-box;
 }
 
 .auth-modal-input:focus {
     outline: none;
-    border-color: var(--accent);
-    background: rgba(0, 0, 0, 0.3);
+    border-color: var(--accent-primary);
+    background: var(--bg-primary);
+    box-shadow: 0 0 0 4px rgba(107, 76, 154, 0.1);
 }
 
 .auth-modal-input::placeholder {
     color: var(--text-light);
-    opacity: 0.3;
+    /* Defined in index.css as #8E847B */
+    opacity: 0.8;
 }
 
 .auth-error {
@@ -262,7 +264,7 @@
     width: 64px;
     height: 64px;
     margin: 0 auto 1.5rem;
-    background: linear-gradient(135deg, var(--accent), var(--accent-light, #8b5cf6));
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-gold));
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -277,6 +279,7 @@
         transform: scale(0);
         opacity: 0;
     }
+
     to {
         transform: scale(1);
         opacity: 1;
@@ -286,7 +289,7 @@
 .auth-success-state h3 {
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--text);
+    color: var(--text-primary);
     margin: 0 0 0.5rem;
 }
 
