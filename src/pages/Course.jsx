@@ -957,7 +957,7 @@ export default function Course() {
                             <br />
                             <button className="btn btn-primary btn-full" onClick={() => setShowModal(true)}>Unlock Now</button>
                         </div>
-                        <div className="preview-note">💡 Try dev email <code>xyz111@email.com</code> for a test drive</div>
+
                     </div>
                 )}
             </div>
@@ -986,7 +986,7 @@ export default function Course() {
                                     disabled={isLoading}
                                 />
                                 {submitError && (
-                                    <p style={{color: '#ef4444', fontSize: '0.875rem', marginTop: '0.5rem'}}>
+                                    <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.5rem' }}>
                                         {submitError}
                                     </p>
                                 )}
