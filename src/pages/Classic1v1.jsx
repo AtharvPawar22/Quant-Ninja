@@ -28,7 +28,9 @@ export default function Classic1v1() {
 
     // Initialize game
     const startGame = useCallback(() => {
-        const qs = getRandomQuestions(questions, TOTAL_QUESTIONS);
+        // Filter to only MCQ questions with options for the arcade
+        const mcqQuestions = questions.filter(q => q.format === 'MCQ' && q.options);
+        const qs = getRandomQuestions(mcqQuestions, TOTAL_QUESTIONS);
         setGameQuestions(qs);
         setCurrentQ(0);
         setTimeLeft(TIME_PER_QUESTION);
@@ -331,7 +333,7 @@ export default function Classic1v1() {
                     </div>
 
                     <div className="options-grid">
-                        {q?.options.map((opt, i) => (
+                        {q?.options?.map((opt, i) => (
                             <button
                                 key={i}
                                 className={`option-btn 
