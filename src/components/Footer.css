@@ -100,7 +100,22 @@
 
 .footer-legal {
     display: flex;
+    align-items: center;
     gap: 2rem;
+}
+
+.legal-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.footer-legal .theme-toggle {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    min-height: 0;
+    background: transparent;
+    border: 1px solid var(--border-prominent);
 }
 
 .footer-legal a {

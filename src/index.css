@@ -1,20 +1,21 @@
-:root {
-  /* Typography - Refined weights for authority */
-  --font-display: 'Playfair Display', serif;
-  --font-body: 'Source Sans 3', sans-serif;
-  --font-mono: 'DM Mono', monospace;
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
-  /* Theme: Light (Academic Scholar) */
+:root {
+  /* Typography - Unique & Professional */
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Instrument Sans', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+
+  /* Theme: Light (Academic Scholar) - Colors Unchanged */
   --bg-primary: #FDFBF7;
   --bg-secondary: #F7F3EB;
   --text-primary: #1A1614;
   --text-secondary: #5C544D;
   --text-light: #8E847B;
 
-  /* Refined Accents - Muted for "Academic Authority" */
+  /* Accents */
   --accent-primary: #6B4C9A;
   --accent-gold: #B88E44;
-  /* Muted from C9A55C for more gravitas */
   --accent-success: #3D8B6E;
 
   --border-color: rgba(26, 22, 20, 0.08);
@@ -26,13 +27,13 @@
   --container: 1200px;
   --navbar-height: 80px;
 
-  /* Refined Spacing for "Airy" feel */
+  /* Refined Spacing */
   --space-unit: 1rem;
   --section-padding: 8rem;
 
   /* Transitions */
-  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-base: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-base: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 [data-theme='dark'] {
@@ -86,8 +87,8 @@ h6 {
   font-family: var(--font-display);
   font-weight: 700;
   color: var(--text-primary);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
 }
 
 a {
@@ -98,8 +99,9 @@ a {
 
 p {
   color: var(--text-secondary);
-  font-size: 1.1rem;
+  font-size: 1.125rem;
   font-weight: 400;
+  line-height: 1.6;
 }
 
 .container {
@@ -108,7 +110,7 @@ p {
   padding: 0 2rem;
 }
 
-/* Enhanced Button System */
+/* Enhanced Button System - More sharp and professional */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -116,27 +118,28 @@ p {
   gap: 0.75rem;
   padding: 1rem 2rem;
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  border-radius: 12px;
-  /* More structured than 100px circle */
+  border-radius: 8px;
+  /* Sharper radius for professional look */
   border: none;
   cursor: pointer;
   transition: all var(--transition-base);
   text-decoration: none;
   position: relative;
   overflow: hidden;
+  letter-spacing: 0.01em;
 }
 
 .btn-primary {
   background: var(--accent-primary);
   color: #fff;
-  box-shadow: 0 4px 12px rgba(107, 76, 154, 0.2);
+  box-shadow: 0 2px 10px rgba(107, 76, 154, 0.15);
 }
 
 .btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(107, 76, 154, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(107, 76, 154, 0.25);
   background: #7a5bb1;
 }
 
@@ -144,16 +147,14 @@ p {
   background: transparent;
   color: var(--text-primary);
   border: 1px solid var(--border-prominent);
-  backdrop-filter: blur(10px);
 }
 
 .btn-secondary:hover {
   background: var(--bg-secondary);
   border-color: var(--accent-primary);
-  transform: translateY(-3px);
 }
 
-/* Shimmer Effect for Highlighted Buttons */
+/* Shimmer Effect */
 .btn-shimmer::after {
   content: '';
   position: absolute;
@@ -166,7 +167,7 @@ p {
       rgba(255, 255, 255, 0.1) 50%,
       transparent 80%);
   transform: rotate(45deg);
-  animation: shimmer 4s infinite;
+  animation: shimmer 5s infinite;
 }
 
 @keyframes shimmer {
@@ -179,22 +180,21 @@ p {
   }
 }
 
-/* Utility: Frosted Glass */
+/* Utilities */
 .glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-color);
-  box-shadow: 0 10px 30px var(--shadow-color);
 }
 
-/* Utility: Airy Spacing */
 .section-airy {
   padding: var(--section-padding) 0;
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -203,9 +203,9 @@ p {
 
 ::-webkit-scrollbar-thumb {
   background: var(--border-prominent);
-  border-radius: 10px;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-primary);
+  background: var(--text-light);
 }

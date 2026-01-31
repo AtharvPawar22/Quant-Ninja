@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import ThemeToggle from './ThemeToggle';
 import './Footer.css';
 
 export default function Footer() {
@@ -49,8 +50,11 @@ export default function Footer() {
                 <div className="footer-bottom">
                     <p>&copy; {new Date().getFullYear()} QuantNinja. All rights reserved.</p>
                     <div className="footer-legal">
-                        <a href="#">Privacy Policy</a>
-                        <a href="#">Terms of Service</a>
+                        <ThemeToggle />
+                        <div className="legal-links">
+                            <a href="#">Privacy Policy</a>
+                            <a href="#">Terms of Service</a>
+                        </div>
                     </div>
                 </div>
             </div>

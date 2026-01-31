@@ -91,8 +91,6 @@ export default function Navbar() {
               ))}
             </ul>
             <div className="navbar-actions">
-              <ThemeToggle />
-
               {/* User Profile Icon */}
               <div className="user-profile-wrapper" ref={userMenuRef}>
                 {user ? (
@@ -111,6 +109,14 @@ export default function Navbar() {
                           <span className="user-email">{user.email}</span>
                         </div>
                         <div className="user-dropdown-divider"></div>
+                        
+                        <div className="user-dropdown-row">
+                            <span className="dropdown-label">Appearance</span>
+                            <ThemeToggle />
+                        </div>
+
+                        <div className="user-dropdown-divider"></div>
+                        
                         <button className="user-dropdown-item" onClick={handleSignOut}>
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
