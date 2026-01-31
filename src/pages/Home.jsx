@@ -6,6 +6,7 @@ import './Home.css';
 
 export default function Home() {
     const [showModal, setShowModal] = useState(false);
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [submitted, setSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -17,6 +18,7 @@ export default function Home() {
         setError(null);
 
         const result = await saveEmailToWaitlist(email, {
+            name: name.trim(),
             source: 'waitlist_modal',
             page: 'home',
         });
@@ -28,6 +30,7 @@ export default function Home() {
             setTimeout(() => {
                 setShowModal(false);
                 setSubmitted(false);
+                setName('');
                 setEmail('');
             }, 2000);
         } else {
@@ -227,6 +230,15 @@ export default function Home() {
                                 <h3 className="modal-title">Ascend to Mastery</h3>
                                 <p>Be the first to access the complete 150-pattern repository.</p>
                                 <form onSubmit={handleSubmit} className="modal-form">
+                                    <input
+                                        type="text"
+                                        placeholder="Enter your name"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        required
+                                        disabled={isLoading}
+                                        className="modal-input"
+                                    />
                                     <input
                                         type="email"
                                         placeholder="Enter your email"

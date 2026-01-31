@@ -28,6 +28,7 @@ export default function Course() {
     const navigate = useNavigate();
 
     const [showModal, setShowModal] = useState(false);
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [submitted, setSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -150,6 +151,7 @@ export default function Course() {
         setIsLoading(true);
 
         const result = await saveEmailToWaitlist(email, {
+            name: name.trim(),
             source: 'course_access_request',
             page: 'course',
         });
@@ -161,6 +163,7 @@ export default function Course() {
             setTimeout(() => {
                 setShowModal(false);
                 setSubmitted(false);
+                setName('');
                 setEmail('');
             }, 2000);
         } else {
@@ -965,7 +968,15 @@ export default function Course() {
                         {!submitted ? (
                             <form onSubmit={handleAccessSubmit}>
                                 <h3>Enterprise Access</h3>
-                                <p>Enter your authorized email to unlock the Dojo.</p>
+                                <p>Enter your details to unlock the Dojo.</p>
+                                <input
+                                    type="text"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    placeholder="Your name"
+                                    required
+                                    disabled={isLoading}
+                                />
                                 <input
                                     type="email"
                                     value={email}
