@@ -9,11 +9,13 @@ import QuantArcade from './pages/QuantArcade';
 import Classic1v1 from './pages/Classic1v1';
 import ChallengeFriend from './pages/ChallengeFriend';
 
+import ScrollToTop from './components/ScrollToTop';
 import './index.css';
 
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <div className="app">
         <Navbar />
         <Routes>

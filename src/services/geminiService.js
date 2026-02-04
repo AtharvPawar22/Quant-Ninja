@@ -133,18 +133,16 @@ const generateQuizWithPYQs = async (files, config, manualNotesText) => {
     console.log('🔍 Finding relevant CAT PYQ questions...');
     const result = findMatchingPYQs(extractedText, config);
 
-    return formatPYQQuestions(result.questions, true);
-};
-
-/**
- * Format PYQ questions for quiz UI
- */
-const formatPYQQuestions = (questions, isKeywordFallback) => {
-    return questions.map((q, index) => {
+    // STEP 3: Format questions for the UI components
+    const formattedQuestions = result.questions.map((q, index) => {
+        // Handle options formatting
         let options = [];
         let answer = q.answer;
+        let questionType = 'TITA'; // Default to TITA
 
-        if (q.options && q.options.length > 0) {
+        if (q.options && q.options.length > 0 && !isTITA) {
+            // This is an MCQ - format the options with labels
+            questionType = 'MCQ';
             options = q.options.map((opt, i) => {
                 const label = String.fromCharCode(65 + i);
                 if (opt.startsWith(`${label}. `)) return opt;
@@ -159,10 +157,11 @@ const formatPYQQuestions = (questions, isKeywordFallback) => {
                 answer = String.fromCharCode(65 + answerIndex);
             }
         }
+        // For TITA questions, keep options empty and answer as-is (numerical value)
 
         return {
             id: index + 1,
-            type: options.length > 0 ? 'MCQ' : 'TITA',
+            type: questionType,
             question: q.question,
             options: options,
             answer: answer,
