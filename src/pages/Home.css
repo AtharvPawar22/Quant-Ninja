@@ -418,7 +418,31 @@
 
 @media (max-width: 768px) {
     .hero-title {
-        font-size: 4rem;
+        font-size: 3rem;
+    }
+
+    .hero-subtitle {
+        flex-direction: column;
+        gap: 1.5rem;
+        text-align: center;
+        align-items: center;
+    }
+
+    .percentile-box {
+        flex-direction: row;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+    .hero-cta {
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .hero-cta .btn {
+        width: 100%;
+        justify-content: center;
     }
 
     .arcade-cta {
@@ -429,7 +453,170 @@
         padding: 3rem 2rem;
     }
 
+    .arcade-banner h2 {
+        font-size: 2rem;
+    }
+
     .features {
-        padding: 6rem 0;
+        padding: 5rem 0;
+    }
+
+    .section-header {
+        margin-bottom: 3rem;
+    }
+
+    .section-title {
+        font-size: 2.25rem;
+    }
+
+    .section-subtitle {
+        font-size: 0.75rem;
+        letter-spacing: 0.15em;
+    }
+
+    /* Stack feature cards in single column on mobile */
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .focus-card {
+        grid-column: span 1;
+    }
+
+    .feature-card {
+        min-height: auto;
+        padding: 2.5rem 2rem;
+    }
+
+    .feature-card h3 {
+        font-size: 1.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .feature-card p {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .card-icon-wrapper {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        margin-bottom: 1.5rem;
+    }
+
+    .card-icon-wrapper svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .card-tag {
+        top: 2rem;
+        right: 2rem;
+        padding: 0.4rem 1rem;
+        font-size: 0.65rem;
+    }
+
+    .difficulty-pills {
+        margin-bottom: 1.5rem;
+    }
+
+    /* Approach Section Mobile */
+    .approach {
+        padding: 4rem 0;
+    }
+
+    .approach-box {
+        padding: 3rem 1.5rem;
+        border-radius: 24px;
+    }
+
+    .approach-content h3 {
+        font-size: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .steps-container {
+        gap: 2.5rem;
+    }
+
+    .approach-step {
+        gap: 1rem;
+        align-items: center;
+        text-align: center;
+    }
+
+    .step-num {
+        font-size: 2.5rem;
+    }
+
+    .step-info h4 {
+        font-size: 1.35rem;
+    }
+
+    .step-info p {
+        font-size: 0.95rem;
+    }
+
+    /* Stats Grid Mobile */
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .stat-card {
+        padding: 2rem 1rem;
+        border-radius: 16px;
+    }
+
+    .stat-card:nth-child(3) {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 1.5rem;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+    }
+
+    .stat-label {
+        font-size: 0.65rem;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .percentile-num {
+        font-size: 2.5rem;
+    }
+
+    .feature-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .approach-box {
+        padding: 2.5rem 1.25rem;
+    }
+
+    .approach-content h3 {
+        font-size: 1.75rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .arcade-banner {
+        padding: 2.5rem 1.5rem;
+    }
+
+    .arcade-banner h2 {
+        font-size: 1.75rem;
+    }
+
+    .arcade-banner p {
+        font-size: 1rem;
     }
 }
