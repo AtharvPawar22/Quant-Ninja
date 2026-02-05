@@ -6,6 +6,7 @@ import './NotesQuiz.css';
 
 const DIFFICULTY_OPTIONS = ['easy', 'medium', 'difficult', 'mixture'];
 const QUESTION_COUNT_OPTIONS = [5, 10, 20];
+const MAX_FILES = 5; // Maximum files allowed
 
 // Timer durations based on question count (in seconds)
 const getTimerDuration = (count) => {
@@ -19,12 +20,16 @@ export default function NotesQuiz() {
 
     // Config state
     const [files, setFiles] = useState([]);
+    const [filePreviews, setFilePreviews] = useState([]); // Image preview URLs
     const [notesText, setNotesText] = useState(''); // Manual text input
     const [difficulty, setDifficulty] = useState('medium');
     const [questionCount, setQuestionCount] = useState(5);
     const [loadingMessage, setLoadingMessage] = useState('');
+    const [loadingSubtext, setLoadingSubtext] = useState('');
     const [error, setError] = useState('');
+    const [isPremiumMode, setIsPremiumMode] = useState(false);
     const fileInputRef = useRef(null);
+    const cameraInputRef = useRef(null);
 
     // Quiz state
     const [questions, setQuestions] = useState([]);
@@ -86,29 +91,73 @@ export default function NotesQuiz() {
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
 
-    // Handle file upload
+    // Handle file upload with previews
     const handleFileUpload = (e) => {
         const newFiles = Array.from(e.target.files);
-        setFiles([...files, ...newFiles]);
-        setError('');
+        addFilesWithPreviews(newFiles);
+    };
+
+    // Handle camera capture
+    const handleCameraCapture = (e) => {
+        const newFiles = Array.from(e.target.files);
+        addFilesWithPreviews(newFiles);
+    };
+
+    // Add files with preview generation
+    const addFilesWithPreviews = (newFiles) => {
+        const validFiles = newFiles.filter(f =>
+            f.type.startsWith('image/') || f.type === 'application/pdf'
+        );
+
+        // Limit to MAX_FILES
+        const remainingSlots = MAX_FILES - files.length;
+        const filesToAdd = validFiles.slice(0, remainingSlots);
+
+        if (filesToAdd.length < validFiles.length) {
+            setError(`Maximum ${MAX_FILES} files allowed. Some files were not added.`);
+        } else {
+            setError('');
+        }
+
+        // Generate previews for images
+        const newPreviews = filesToAdd.map(file => {
+            if (file.type.startsWith('image/')) {
+                return URL.createObjectURL(file);
+            }
+            return null; // PDF - no preview
+        });
+
+        setFiles([...files, ...filesToAdd]);
+        setFilePreviews([...filePreviews, ...newPreviews]);
     };
 
     // Handle file drop
     const handleDrop = useCallback((e) => {
         e.preventDefault();
         const droppedFiles = Array.from(e.dataTransfer.files);
-        const validFiles = droppedFiles.filter(f =>
-            f.type.startsWith('image/') || f.type === 'application/pdf'
-        );
-        setFiles([...files, ...validFiles]);
-    }, [files]);
+        addFilesWithPreviews(droppedFiles);
+    }, [files, filePreviews]);
 
     const handleDragOver = (e) => e.preventDefault();
 
-    // Remove file
+    // Remove file and its preview
     const removeFile = (index) => {
+        // Revoke the object URL to free memory
+        if (filePreviews[index]) {
+            URL.revokeObjectURL(filePreviews[index]);
+        }
         setFiles(files.filter((_, i) => i !== index));
+        setFilePreviews(filePreviews.filter((_, i) => i !== index));
     };
+
+    // Cleanup previews on unmount
+    useEffect(() => {
+        return () => {
+            filePreviews.forEach(url => {
+                if (url) URL.revokeObjectURL(url);
+            });
+        };
+    }, []);
 
     // Generate quiz
     const handleGenerateQuiz = async () => {
@@ -119,13 +168,39 @@ export default function NotesQuiz() {
 
         setStage('loading');
         setError('');
-        setLoadingMessage('Analyzing your notes...');
+
+        // Check if using premium mode (Gemini API available)
+        const premium = hasApiKey();
+        setIsPremiumMode(premium);
+
+        if (premium) {
+            setLoadingMessage('🧠 Understanding your notes deeply...');
+            setLoadingSubtext('Using AI to analyze concepts, not just keywords');
+        } else {
+            setLoadingMessage('📖 Analyzing your notes...');
+            setLoadingSubtext('Extracting text and matching questions');
+        }
 
         try {
-            setTimeout(() => setLoadingMessage('Reading your notes carefully...'), 2000);
-            setTimeout(() => setLoadingMessage('Extracting formulas and concepts...'), 4000);
-            setTimeout(() => setLoadingMessage('Generating CAT 2023-25 style questions...'), 7000);
-            setTimeout(() => setLoadingMessage('Preparing your personalized quiz...'), 10000);
+            // Premium loading messages
+            if (premium) {
+                setTimeout(() => {
+                    setLoadingMessage('🔍 Identifying mathematical concepts...');
+                    setLoadingSubtext('Understanding what your notes are really teaching');
+                }, 2500);
+                setTimeout(() => {
+                    setLoadingMessage('📐 Detecting formulas and their purposes...');
+                    setLoadingSubtext('Mapping to CAT 2024-2026 patterns');
+                }, 5000);
+                setTimeout(() => {
+                    setLoadingMessage('🎯 Finding perfectly matched questions...');
+                    setLoadingSubtext('Excluding irrelevant topics, selecting best fits');
+                }, 8000);
+            } else {
+                setTimeout(() => setLoadingMessage('Reading your notes carefully...'), 2000);
+                setTimeout(() => setLoadingMessage('Extracting formulas and concepts...'), 4000);
+                setTimeout(() => setLoadingMessage('Finding relevant CAT questions...'), 7000);
+            }
 
             // Pass both files and manual text
             const generatedQuestions = await generateQuiz(files, {
@@ -254,8 +329,14 @@ export default function NotesQuiz() {
 
     // Reset quiz
     const resetQuiz = () => {
+        // Cleanup preview URLs
+        filePreviews.forEach(url => {
+            if (url) URL.revokeObjectURL(url);
+        });
+
         setStage('config');
         setFiles([]);
+        setFilePreviews([]);
         setNotesText('');
         setQuestions([]);
         setAnswers({});
@@ -263,21 +344,55 @@ export default function NotesQuiz() {
         setMarkedForReview(new Set());
         setVisitedQuestions(new Set([0]));
         setShowSolutions({});
+        setIsPremiumMode(false);
     };
 
     // Render config stage
     const renderConfig = () => (
         <div className="config-container">
+            {/* Premium badge if API available */}
+            {hasApiKey() && (
+                <div className="premium-badge">
+                    <span className="badge-icon">🧠</span>
+                    <span className="badge-text">AI-Powered Concept Analysis Active</span>
+                </div>
+            )}
+
             <div className="config-section">
                 <div className="section-header">
                     <h3>Upload Notes</h3>
+                    <span className="file-count">{files.length}/{MAX_FILES} files</span>
                 </div>
-                <div
-                    className="upload-zone"
-                    onClick={() => fileInputRef.current?.click()}
-                    onDrop={handleDrop}
-                    onDragOver={handleDragOver}
-                >
+
+                {/* Upload buttons row */}
+                <div className="upload-buttons-row">
+                    {/* Camera capture button (primarily for mobile) */}
+                    <button
+                        className="upload-method-btn camera-btn"
+                        onClick={() => cameraInputRef.current?.click()}
+                        disabled={files.length >= MAX_FILES}
+                    >
+                        <span className="btn-icon">📸</span>
+                        <span className="btn-label">Take Photo</span>
+                    </button>
+                    <input
+                        ref={cameraInputRef}
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                        onChange={handleCameraCapture}
+                        hidden
+                    />
+
+                    {/* File upload button */}
+                    <button
+                        className="upload-method-btn file-btn"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={files.length >= MAX_FILES}
+                    >
+                        <span className="btn-icon">📁</span>
+                        <span className="btn-label">Browse Files</span>
+                    </button>
                     <input
                         ref={fileInputRef}
                         type="file"
@@ -286,22 +401,52 @@ export default function NotesQuiz() {
                         multiple
                         hidden
                     />
-                    <div className="upload-icon-box"></div>
-                    <p className="upload-text">Drop files here or click to browse</p>
-                    <p className="upload-hint">Supports PDF, PNG, JPG (including handwritten notes)</p>
                 </div>
 
+                {/* Drop zone */}
+                <div
+                    className={`upload-zone ${files.length >= MAX_FILES ? 'disabled' : ''}`}
+                    onClick={() => files.length < MAX_FILES && fileInputRef.current?.click()}
+                    onDrop={handleDrop}
+                    onDragOver={handleDragOver}
+                >
+                    <div className="upload-icon-box">📄</div>
+                    <p className="upload-text">
+                        {files.length >= MAX_FILES
+                            ? 'Maximum files reached'
+                            : 'Drop files here or click to browse'}
+                    </p>
+                    <p className="upload-hint">Upload up to {MAX_FILES} images or PDFs • Handwritten notes supported</p>
+                </div>
+
+                {/* Image preview grid */}
                 {files.length > 0 && (
-                    <div className="file-list">
+                    <div className="image-preview-grid">
                         {files.map((file, i) => (
-                            <div key={i} className="file-item">
-                                <span className="file-name">{file.name}</span>
-                                <button
-                                    className="file-remove"
-                                    onClick={(e) => { e.stopPropagation(); removeFile(i); }}
-                                >
-                                    ×
-                                </button>
+                            <div key={i} className="preview-card">
+                                {filePreviews[i] ? (
+                                    <img
+                                        src={filePreviews[i]}
+                                        alt={`Note ${i + 1}`}
+                                        className="preview-image"
+                                    />
+                                ) : (
+                                    <div className="preview-placeholder">
+                                        <span className="pdf-icon">📄</span>
+                                        <span className="pdf-label">PDF</span>
+                                    </div>
+                                )}
+                                <div className="preview-overlay">
+                                    <span className="file-num">{i + 1}</span>
+                                    <button
+                                        className="remove-btn"
+                                        onClick={(e) => { e.stopPropagation(); removeFile(i); }}
+                                        title="Remove"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+                                <div className="preview-filename">{file.name.slice(0, 15)}...</div>
                             </div>
                         ))}
                     </div>
@@ -379,7 +524,14 @@ export default function NotesQuiz() {
             <div className="progress-bar-container">
                 <div className="progress-bar-fill"></div>
             </div>
-            <p className="loading-subtext">Our Ninja is analyzing your {files.length > 0 ? 'images' : 'notes'} for CAT Quant patterns...</p>
+            <p className="loading-subtext">
+                {loadingSubtext || `Analyzing your ${files.length > 0 ? `${files.length} image(s)` : 'notes'} for CAT patterns...`}
+            </p>
+            {isPremiumMode && (
+                <div className="premium-loading-indicator">
+                    <span className="ai-chip">🧠 AI-Powered</span>
+                </div>
+            )}
         </div>
     );
 
